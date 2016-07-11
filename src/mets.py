@@ -4,20 +4,17 @@ from lxml import etree as ET
 __version__ = '0.1'
 
 METS_NS = "http://www.loc.gov/METS/"
+XLIN_NS = "http://www.w3.org/1999/xlink"
 
 mets_nsmap = {
     'mets': METS_NS,
     }
 
+xlin_nsmap = {
+    'xlin': XLIN_NS
+}
 
-class XmlElement(object):
-    def __init__(self):
-        self.root = None
-    def __repr__(self):
-        return self.root
-
-
-class Mets(XmlElement):
+class Mets(object):
     def __init__(self):
         self.root = ET.Element("{%s}mets" % (METS_NS,), nsmap=mets_nsmap)
 
@@ -30,7 +27,7 @@ class Mets(XmlElement):
 #         if identifier:
 #             self.root.attrib['ID'] = identifier
 
-class metsHdr(XmlElement):
+class metsHdr(object):
     def __init__(self, **kwargs):
         self.root = ET.Element("{%s}metsHdr" % (METS_NS), nsmap=mets_nsmap)
         for attrib, value in kwargs.items():
@@ -42,35 +39,35 @@ class metsHdr(XmlElement):
         
 
 
-class DmdSec(XmlElement):
+class DmdSec(object):
     def __init__(self, identifier=None):
         self.root = ET.Element("{%s}dmdSec" % (METS_NS,), nsmap=mets_nsmap)
         if identifier:
             self.root.attrib['ID'] = identifier
 
 
-class AmdSec(XmlElement):
+class AmdSec(object):
     def __init__(self, identifier=None):
         self.root = ET.Element("{%s}amdSec" % (METS_NS,), nsmap=mets_nsmap)
         if identifier:
             self.root.attrib['ID'] = identifier
 
 
-class StructLink(XmlElement):
+class StructLink(object):
     def __init__(self, identifier=None):
         self.root = ET.Element("{%s}structLink" % (METS_NS,), nsmap=mets_nsmap)
         if identifier:
             self.root.attrib['ID'] = identifier
 
 
-class StructMap(XmlElement):
+class StructMap(object):
     def __init__(self, identifier=None):
         self.root = ET.Element("{%s}structMap" % (METS_NS,), nsmap=mets_nsmap)
         if identifier:
             self.root.attrib['ID'] = identifier
 
 
-class BehaviorSec(XmlElement):
+class BehaviorSec(object):
     def __init__(self, identifier=None):
         self.root = ET.Element("{%s}behaviorSec" % (METS_NS,), nsmap=mets_nsmap)
         if identifier:
@@ -78,12 +75,12 @@ class BehaviorSec(XmlElement):
 
 # MD extension for parent classes
 
-class MdWrap(XmlElement):
+class MdWrap(object):
     def __init__(self):
         self.root = ET.Element()
 
 # Generic children of MetsHdr Parent
-class Agent(XmlElement):
+class Agent(object):
     def __init__(self, **kwargs):
         self.root = ET.Element("{%s}agent" % (METS_NS,), nsmap=mets_nsmap)
         for attrib, value in kwargs.items():
@@ -94,19 +91,19 @@ class Agent(XmlElement):
                 pass
 
 
-class Name(XmlElement):
+class Name(object):
     '''A subelement of Agent. No attributes can be given - only a text value for the element.'''
     def __init__(self, value):
         self.root = ET.Element("{%s}name" % (METS_NS,), nsmap=mets_nsmap)
         self.root.text = value
 
-class Note(XmlElement):
+class Note(object):
     '''A subelement of Agent. No attributes can be given - only a text value for the element.'''
     def __init__(self, value):
         self.root = ET.Element("{%s}name" % (METS_NS,), nsmap=mets_nsmap)
         self.root.text = value
 
-class AltRecordId(XmlElement):
+class AltRecordId(object):
     '''A subelement of metsHdr. Accepts no attributes - only an element value.'''
     def __init__(self, **kwargs):
         self.root = ET.Element("{%s}altRecordId" % (METS_NS,), 
@@ -118,7 +115,7 @@ class AltRecordId(XmlElement):
                 #TODO: log an exception
                 pass
 
-class MetsDocumentId(XmlElement):
+class MetsDocumentId(object):
     '''A subelement of metsHdr. Accepted attributes are ID and TYPE.'''
     def __init__(self, **kwargs):
         self.root = ET.Element("{%s}metsDocumentID" % (METS_NS,), 
@@ -131,7 +128,7 @@ class MetsDocumentId(XmlElement):
                 pass
 
 
-class MdRef(XmlElement):
+class MdRef(object):
     '''A subelement of dmdSec, techMd, rightsMD, sourceMD and
     digiProvMD. Accepted attributes are ID, LABEL, XPTR, or the
     Location attributes LOCTYPE or OTHERLOCTYPE.'''
@@ -155,7 +152,7 @@ class MdRef(XmlElement):
                     pass
 
 
-class MdWrap(XmlElement):
+class MdWrap(object):
     '''A subelement of dmdSec, techMD, rightsMD, sourceMD and digiProvMd. It is
     used to wrap metadata from other schemas, such as PREMIS.'''
     def __init__(self, **kwargs):
@@ -168,12 +165,12 @@ class MdWrap(XmlElement):
                 self.root.attrib[attrib.upper()] = value
 
 
-class XmlData(XmlElement):
+class XmlData(object):
     '''A subelement of MdWrap. Is used to contain XMl data.'''
     def __init__(self):
         self.root = ET.Element("{%s}xmlData" % (METS_NS), nsmap=mets_nsmap)
 
-class BinData(XmlElement):
+class BinData(object):
     '''A subelement of MdWrap. Is used to contain base64-encoded binary data.'''
     def __init__(self):
         self.root = ET.Element("{%s}binData" % (METS_NS), nsmap=mets_nsmap)
@@ -182,7 +179,7 @@ class BinData(XmlElement):
 
 # Generic children of AMD Parent
 
-class MdExt(XmlElement):
+class MdExt(object):
     def __init__(self, element=None,  **kwargs):
         self.root = ET.Element("{%s}%s" % (METS_NS, element), nsmap=mets_nsmap)
         # self.mdWrap = ET.SubElement(self.root,
@@ -211,12 +208,12 @@ class DigiprovMd(MdExt):
 # fileSec classes
 
 
-class FileSec(XmlElement):
+class FileSec(object):
     def __init__(self):
         self.root = ET.Element("{%s}fileSec" % (METS_NS), nsmap=mets_nsmap)
 
 
-class FileGrp(XmlElement):
+class FileGrp(object):
     '''A subelement of fileSec. A fileGrp can contain nested fileGrps, 
     or file elements.'''
     def __init__(self, **kwargs):
@@ -226,7 +223,7 @@ class FileGrp(XmlElement):
                 self.root.attrib[attrib.upper()] = value
 
 
-class File(XmlElement):
+class File(object):
     '''A subelement of fileGrp. Provides access to the content files for the
     digital object being described by the METS document.'''
     def __init__(self, **kwargs):
@@ -234,4 +231,31 @@ class File(XmlElement):
         for attrib, value in kwargs.items():
             if attrib.upper() in ['ID', 'SEQ', 'OWNERID', 'ADMID', 'DMDID',
                 'GROUPID', 'USE', 'BEGIN', 'END', 'BETYPE']:
+                self.root.attrib[attrib.upper()] = value
+
+
+class FLocat(object):
+    '''A subelement of File. Provides a pointer to the location of a content file.
+    It uses the XLink reference syntax to provide linking information indicating the 
+    actual location of the content file, along with the other attributes specifying
+    additional information. NOTE: <FLocat> is an empty element. The location of the
+    resource pointed to MUST be stored in the xlink:href attribute.'''
+    def __init__(self, **kwargs):
+        self.root = ET.Element("{%s}FLocat" % (METS_NS), nsmap=xlin_nsmap)
+        for attrib, value in kwargs.items():
+            if attrib.upper in ['ID', 'USE', 'LOCTYPE', 'OTHERLOCTYPE']:
+                self.root.attrib[attrib.upper()] = value
+            if attrib == "xlin_href":
+                self.root.set("{%s}%s" % (XLIN_NS, attrib), value)
+
+
+class FContent(object):
+    '''A subelement of File. It is used to identify a content file contained internally
+    within a METS document. It must either be Base64 encoded and contained within the
+    subsidiart <binData> wrapper element, or consist of XML information and be contained
+    within the subsidiary <xmlData> wrapper element.'''
+    def __init__(self, **kwargs):
+        self.root = ET.Element("{%s}FContent" % (METS_NS), nsmap=mets_nsmap)
+        for attrib, value in kwargs.items():
+            if attrib.upper in ['ID', 'USE']:
                 self.root.attrib[attrib.upper()] = value
