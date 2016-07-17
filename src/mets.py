@@ -53,20 +53,6 @@ class AmdSec(object):
             self.root.attrib['ID'] = identifier
 
 
-class StructLink(object):
-    def __init__(self, identifier=None):
-        self.root = ET.Element("{%s}structLink" % (METS_NS,), nsmap=mets_nsmap)
-        if identifier:
-            self.root.attrib['ID'] = identifier
-
-
-class StructMap(object):
-    def __init__(self, identifier=None):
-        self.root = ET.Element("{%s}structMap" % (METS_NS,), nsmap=mets_nsmap)
-        if identifier:
-            self.root.attrib['ID'] = identifier
-
-
 class BehaviorSec(object):
     def __init__(self, identifier=None):
         self.root = ET.Element("{%s}behaviorSec" % (METS_NS,), nsmap=mets_nsmap)
@@ -166,12 +152,12 @@ class MdWrap(object):
 
 
 class XmlData(object):
-    '''A subelement of MdWrap. Is used to contain XMl data.'''
+    '''A subelement of MdWrap or FContent. Is used to contain XMl data.'''
     def __init__(self):
         self.root = ET.Element("{%s}xmlData" % (METS_NS), nsmap=mets_nsmap)
 
 class BinData(object):
-    '''A subelement of MdWrap. Is used to contain base64-encoded binary data.'''
+    '''A subelement of MdWrap or FContent. Is used to contain base64-encoded binary data.'''
     def __init__(self):
         self.root = ET.Element("{%s}binData" % (METS_NS), nsmap=mets_nsmap)
 
@@ -259,3 +245,66 @@ class FContent(object):
         for attrib, value in kwargs.items():
             if attrib.upper in ['ID', 'USE']:
                 self.root.attrib[attrib.upper()] = value
+            else:
+                #TODO: add exception
+
+
+class Stream(object):
+    '''A subelement of File. A component byte stream element <stream> may
+    be composed of one or more subsidiary streams. An MPEG4 file, for example,
+    might contain separate audio and video streams, each of which is
+    associated with technical metadata. The repeatable <stream> element
+    provides a mechanism to record the existence of separate data streams
+    within a particular file, and the opportunity to associate <dmdSec> 
+    and <amdSec> with those subsidiary data streams if desired.'''
+    def __init__(self. **kwargs):
+        self.root = ET.Element("{%s}stream" % (METS_NS), nsmap=mets_nsmap)
+        for attrib, value in kwargs.items():
+            if attrib.upper() in ['ID', 'OWNERID', 'ADMID', 'DMDID', 'BEGIN',
+                        'END', 'BETYPE']:
+                self.root.attrib[attrib.upper()] = value    
+            elif attrib.upper() == 'STREAMTYPE':
+                self.root.attrib['streamType'] = value
+            else:
+                # TODO: add exception
+
+
+class TransformFile(object):
+    '''A subelement of File. The transform file element <transformFile>
+    provides a means to access any subsidiary files listed below a <file>
+    element by indicating the steps required to "unpack" or transform the
+    subsidiary files. This element is repeatable and might provide a link to a
+    <behavior> in the <behaviorSec> that performs the transformation. '''
+    def __init__(self, **kwargs):
+        self.root = ET.Element("{%s}transformFile" % (METS_NS), 
+            nsmap=mets_nsmap)
+        for attrib, value in kwargs.items():
+            if attrib.upper() in ['ID', 'TRANSFORMTYPE', 'TRANSFORMALGORITHM',
+                    'TRANSFORMKEY', 'TRANSFORMBEHAVIOR', 'TRANSFORMORDER']:
+                self.root.attrib[attrib.upper()] = value
+            else:
+                # TODO: add exception
+
+
+# structMap classes
+class StructMap(object):
+    '''The structural map section <structMap> is the heart of a METS document.
+    It provides a means for organising the digital content represented by the
+    <file> elements in the <fileSec> of the METS document into a coherent
+    hierarchical structure. Such a hierarchical structure can be presented to
+    users to facilitate their comprehension and navigation of the digital 
+    content. The structure consists of a series of nested <div> elements. A
+    <div> element may directly point to content via <fptr> (file pointer)
+    elements or <mptr> (METS pointer) elements.'''
+    def __init__(self, **kwargs):
+        self.root = ET.Element("{%s}structMap" % (METS_NS,), nsmap=mets_nsmap)
+        for arrib, value in kwargs.items():
+            if attrib.upper() in ['ID', 'TYPE', 'LABEL']:
+                self.root.attrib[attrib.upper()] = value
+            else:
+                # TOD: add exception
+
+class Div(object):
+    '''A subelement of METS.'''
+    def __init__(self, **kwargs):
+        self.root

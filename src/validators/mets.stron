@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<schema xmlns="http://purl.oclc.org/dsdl/schematron">
+	<title>METS validation schema for py_premis_in_mets</title>
+
+	<ns prefix="mets" uri="http://www.loc.gov/METS/"/>
+	
+	<pattern id="baseMetsTests">
+		<ns prefix="mets" uri="http://www.loc.gov/METS/"/>
+	</pattern>
+</schema>
