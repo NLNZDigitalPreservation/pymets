@@ -5,6 +5,10 @@
 	<ns prefix="mets" uri="http://www.loc.gov/METS/"/>
 	
 	<pattern id="baseMetsTests">
-		<ns prefix="mets" uri="http://www.loc.gov/METS/"/>
+		<rule context="mets:mets">
+			<assert test="(count(mets:metsHdr) = 1) or (count(mets:metsHdr) = 0)">
+				There should be only one or zero metsHdr elements
+			</assert>
+		</rule>
 	</pattern>
 </schema>

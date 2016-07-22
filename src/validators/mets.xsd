@@ -671,7 +671,7 @@ to clarify the differences between the ORDER, ORDERLABEL, and LABEL attributes f
 						</xsd:annotation>
 					</xsd:attribute>
 					<xsd:attributeGroup ref="LOCATION"/>
-					<!-- <xsd:attributeGroup ref="xlink:simpleLink"/> -->
+					<xsd:attributeGroup ref="xlink:simpleLink"/>
 				    <xsd:attribute name="CONTENTIDS" type="URIs" use="optional">
 			            <xsd:annotation>
 			            	<xsd:documentation xml:lang="en">CONTENTIDS (URI/O): Content IDs for the content represented by the &lt;mptr&gt; (equivalent to DIDL DII or Digital Item Identifier, a unique external ID).

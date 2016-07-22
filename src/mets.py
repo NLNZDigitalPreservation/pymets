@@ -14,9 +14,10 @@ xlin_nsmap = {
     'xlin': XLIN_NS
 }
 
-class Mets(object):
-    def __init__(self):
-        self.root = ET.Element("{%s}mets" % (METS_NS,), nsmap=mets_nsmap)
+ET.register_namespace('mets', METS_NS)
+
+class Mets(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}mets'
 
 
 # Generic parent classes
@@ -27,23 +28,94 @@ class Mets(object):
 #         if identifier:
 #             self.root.attrib['ID'] = identifier
 
-class metsHdr(object):
-    def __init__(self, **kwargs):
-        self.root = ET.Element("{%s}metsHdr" % (METS_NS), nsmap=mets_nsmap)
-        for attrib, value in kwargs.items():
-            if attrib.upper() in ['ID', 'ADMID', 'CREATEDATE', 'LASTMODDATE', 'RECORDSTATUS']:
-                self.root.attrib[attrib.upper()] = value
-            else:
-                #TODO: log an exception
-                pass
+
+def initialise_values(element, attribs_list):
+    for key in element.attrib:
+        # check if the attribs are lower-case
+        if key.upper() in attribs_list and key != key.upper():
+            element.attrib[key.upper()] = element.attrib[key]
+            del element.attrib[key]
+        elif key.upper() not in attribs_list:
+            print("WARN: {} not allowed in element {}".format(
+                key, element.TAG))
+            del element.attrib[key]
+
+class metsHdr(ET.ElementBase):
+
+    TAG = '{http://www.loc.gov/METS/}metsHdr'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'ADMID', 'CREATEDATE', 'LASTMODDATE', 
+            'RECORDSTATUS'])
+        # self.attribs = ['ID', 'ADMID', 'CREATEDATE', 'LASTMODDATE', 
+        #     'RECORDSTATUS']
+        # for key in self.attrib:
+        #     print(key + self.attrib[key])
+        #     # check if the attribs are lower-case
+        #     if key.upper() in self.attribs and key != key.upper():
+        #         self.attrib[key.upper()] = self.attrib[key]
+        #         del self.attrib[key]
+        #     elif key.upper() not in self.attribs:
+        #         print("WARN: {} not allowed in element {}".format(
+        #             key, self.TAG))
+        #         del self.attrib[key]
+
+    @property
+    def id(self):
+        return self.attrib['ID']
+    
+    @id.setter
+    def id(self, value):
+        self.attib['ID'] = value
+    
+    @property
+    def admid(self):
+        return self.attrib['ADMID']
+
+    @admid.setter
+    def admid(self, value):
+        self.attrib['ADMID'] = value
+
+    @property
+    def createdate(self):
+        return self.attrib['CREATEDATE']
+    
+    @createdate.setter
+    def createdate(self, value):
+        self.attrib['CREATEDATE'] = value
+
+    @property
+    def lastmoddate(self):
+        return self.attrib['LASTMODDATE']
+    
+    @lastmoddate.setter
+    def lastmoddate(self, value):
+        self.attrib['LASTMODDATE'] = value
+
+    @property
+    def recordstatus(self):
+        return self.attrib['RECORDSTATUS']
+    
+    @recordstatus.setter
+    def recordstatus(self, value):
+        self.attrib['RECORDSTATUS'] = value
+    
         
 
+class DmdSec(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}metsHdr'
 
-class DmdSec(object):
-    def __init__(self, identifier=None):
-        self.root = ET.Element("{%s}dmdSec" % (METS_NS,), nsmap=mets_nsmap)
-        if identifier:
-            self.root.attrib['ID'] = identifier
+    def _init(self):
+        initialise_values(self, ['ID'])
+
+    @property
+    def id(self):
+        return self.attrib['ID']
+
+    @id.setter
+    def id(self, value):
+        self.attrib['ID'] = value
+    
 
 
 class AmdSec(object):
@@ -86,13 +158,13 @@ class Name(object):
 class Note(object):
     '''A subelement of Agent. No attributes can be given - only a text value for the element.'''
     def __init__(self, value):
-        self.root = ET.Element("{%s}name" % (METS_NS,), nsmap=mets_nsmap)
+        self.root = ET.Element("{%s}note" % (METS_NS,), nsmap=mets_nsmap)
         self.root.text = value
 
-class AltRecordId(object):
+class AltRecordID(object):
     '''A subelement of metsHdr. Accepts no attributes - only an element value.'''
     def __init__(self, **kwargs):
-        self.root = ET.Element("{%s}altRecordId" % (METS_NS,), 
+        self.root = ET.Element("{%s}altRecordID" % (METS_NS,), 
             nsmap=mets_nsmap)
         for attrib, value in kwargs.items():
             if attrib.upper() in ['ID', 'TYPE']:
@@ -100,6 +172,7 @@ class AltRecordId(object):
             else:
                 #TODO: log an exception
                 pass
+
 
 class MetsDocumentId(object):
     '''A subelement of metsHdr. Accepted attributes are ID and TYPE.'''
@@ -168,6 +241,8 @@ class BinData(object):
 class MdExt(object):
     def __init__(self, element=None,  **kwargs):
         self.root = ET.Element("{%s}%s" % (METS_NS, element), nsmap=mets_nsmap)
+        for attrib, value in kwargs.items():
+            self.root.attrib[attrib] = value
         # self.mdWrap = ET.SubElement(self.root,
         #     "{%s}mdWrap" % METS_NS, MDTYPE="OTHER", OTHERMDTYPE="dnx")
 
@@ -247,6 +322,7 @@ class FContent(object):
                 self.root.attrib[attrib.upper()] = value
             else:
                 #TODO: add exception
+                pass
 
 
 class Stream(object):
@@ -257,7 +333,7 @@ class Stream(object):
     provides a mechanism to record the existence of separate data streams
     within a particular file, and the opportunity to associate <dmdSec> 
     and <amdSec> with those subsidiary data streams if desired.'''
-    def __init__(self. **kwargs):
+    def __init__(self, **kwargs):
         self.root = ET.Element("{%s}stream" % (METS_NS), nsmap=mets_nsmap)
         for attrib, value in kwargs.items():
             if attrib.upper() in ['ID', 'OWNERID', 'ADMID', 'DMDID', 'BEGIN',
@@ -267,6 +343,7 @@ class Stream(object):
                 self.root.attrib['streamType'] = value
             else:
                 # TODO: add exception
+                pass
 
 
 class TransformFile(object):
@@ -284,6 +361,7 @@ class TransformFile(object):
                 self.root.attrib[attrib.upper()] = value
             else:
                 # TODO: add exception
+                pass
 
 
 # structMap classes
@@ -298,11 +376,12 @@ class StructMap(object):
     elements or <mptr> (METS pointer) elements.'''
     def __init__(self, **kwargs):
         self.root = ET.Element("{%s}structMap" % (METS_NS,), nsmap=mets_nsmap)
-        for arrib, value in kwargs.items():
+        for attrib, value in kwargs.items():
             if attrib.upper() in ['ID', 'TYPE', 'LABEL']:
                 self.root.attrib[attrib.upper()] = value
             else:
                 # TOD: add exception
+                pass
 
 class Div(object):
     '''A subelement of METS.'''
