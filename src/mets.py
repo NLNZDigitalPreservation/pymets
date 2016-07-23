@@ -19,7 +19,6 @@ ET.register_namespace('mets', METS_NS)
 class Mets(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}mets'
 
-
 # Generic parent classes
 
 # class metsHdr(object):
@@ -47,18 +46,6 @@ class metsHdr(ET.ElementBase):
     def _init(self):
         initialise_values(self, ['ID', 'ADMID', 'CREATEDATE', 'LASTMODDATE', 
             'RECORDSTATUS'])
-        # self.attribs = ['ID', 'ADMID', 'CREATEDATE', 'LASTMODDATE', 
-        #     'RECORDSTATUS']
-        # for key in self.attrib:
-        #     print(key + self.attrib[key])
-        #     # check if the attribs are lower-case
-        #     if key.upper() in self.attribs and key != key.upper():
-        #         self.attrib[key.upper()] = self.attrib[key]
-        #         del self.attrib[key]
-        #     elif key.upper() not in self.attribs:
-        #         print("WARN: {} not allowed in element {}".format(
-        #             key, self.TAG))
-        #         del self.attrib[key]
 
     @property
     def id(self):
@@ -103,7 +90,8 @@ class metsHdr(ET.ElementBase):
         
 
 class DmdSec(ET.ElementBase):
-    TAG = '{http://www.loc.gov/METS/}metsHdr'
+
+    TAG = '{http://www.loc.gov/METS/}dmdSec'
 
     def _init(self):
         initialise_values(self, ['ID'])
@@ -117,74 +105,175 @@ class DmdSec(ET.ElementBase):
         self.attrib['ID'] = value
     
 
+class AmdSec(ET.ElementBase):
 
-class AmdSec(object):
-    def __init__(self, identifier=None):
-        self.root = ET.Element("{%s}amdSec" % (METS_NS,), nsmap=mets_nsmap)
-        if identifier:
-            self.root.attrib['ID'] = identifier
+    TAG = '{http://www.loc.gov/METS/}amdSec'
+
+    def _init(self):
+        initialise_values(self, ['ID'])
+
+    @property
+    def id(self):
+        return self.attrib['ID']
+
+    @id.setter
+    def id(self, value):
+        self.attrib['ID'] = value    
 
 
-class BehaviorSec(object):
-    def __init__(self, identifier=None):
-        self.root = ET.Element("{%s}behaviorSec" % (METS_NS,), nsmap=mets_nsmap)
-        if identifier:
-            self.root.attrib['ID'] = identifier
+# class AmdSec(object):
+#     def __init__(self, identifier=None):
+#         self.root = ET.Element("{%s}amdSec" % (METS_NS,), nsmap=mets_nsmap)
+#         if identifier:
+#             self.root.attrib['ID'] = identifier
 
-# MD extension for parent classes
+class BehaviorSec(ET.ElementBase):
 
-class MdWrap(object):
-    def __init__(self):
-        self.root = ET.Element()
+    TAG = '{http://www.loc.gov/METS/}behaviorSec'
+
+    def _init(self):
+        initialise_values(self, ['ID'])
+
+    @property
+    def id(self):
+        return self.attrib['ID']
+
+    @id.setter
+    def id(self, value):
+        self.attrib['ID'] = value 
+
+
 
 # Generic children of MetsHdr Parent
-class Agent(object):
-    def __init__(self, **kwargs):
-        self.root = ET.Element("{%s}agent" % (METS_NS,), nsmap=mets_nsmap)
-        for attrib, value in kwargs.items():
-            if attrib.upper() in ['ID', 'ROLE', 'OTHERROLE', 'TYPE', 'OTHERTYPE']:
-                self.root.attrib[attrib.upper()] = value
-            else:
-                #TODO: log an exception
-                pass
+class Agent(ET.ElementBase):
+
+    TAG = '{http://www.loc.gov/METS/}agent'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'ROLE', 'OTHERROLE', 'TYPE', 'OTHERTYPE'])
+
+    @property
+    def id(self):
+        return self.attrib['ID']
+
+    @id.setter
+    def id(self, value):
+        self.attrib['ID'] = value
+    
+    @property
+    def role(self):
+        return self.attrib['ROLE']
+
+    @role.setter
+    def role(self, value):
+        self.attrib['ROLE'] = value
+
+    @property
+    def otherrole(self):
+        return self.attrib['OTHERROLE']
+
+    @otherrole.setter
+    def otherrole(self, value):
+        self.attrib['OTHERROLE'] = value
+
+    @property
+    def type(self):
+        return self.attrib['TYPE']
+
+    @type.setter
+    def type(self, value):
+        self.attrib['TYPE'] = value
+
+    @property
+    def othertype(self):
+        return self.attrib['OTHERTYPE']
+
+    @othertype.setter
+    def othertype(self, value):
+        self.attrib['OTHERTYPE'] = value
 
 
-class Name(object):
+class Name(ET.ElementBase):
     '''A subelement of Agent. No attributes can be given - only a text value for the element.'''
-    def __init__(self, value):
-        self.root = ET.Element("{%s}name" % (METS_NS,), nsmap=mets_nsmap)
-        self.root.text = value
+    
+    TAG = '{http://www.loc.gov/METS/}name'
 
-class Note(object):
+
+class Note(ET.ElementBase):
     '''A subelement of Agent. No attributes can be given - only a text value for the element.'''
-    def __init__(self, value):
-        self.root = ET.Element("{%s}note" % (METS_NS,), nsmap=mets_nsmap)
-        self.root.text = value
 
-class AltRecordID(object):
-    '''A subelement of metsHdr. Accepts no attributes - only an element value.'''
-    def __init__(self, **kwargs):
-        self.root = ET.Element("{%s}altRecordID" % (METS_NS,), 
-            nsmap=mets_nsmap)
-        for attrib, value in kwargs.items():
-            if attrib.upper() in ['ID', 'TYPE']:
-                self.root.attrib[attrib.upper()] = value
-            else:
-                #TODO: log an exception
-                pass
+    TAG = '{http://www.loc.gov/METS/}note'
 
+# class Note(object):
+#     '''A subelement of Agent. No attributes can be given - only a text value for the element.'''
+#     def __init__(self, value):
+#         self.root = ET.Element("{%s}note" % (METS_NS,), nsmap=mets_nsmap)
+#         self.root.text = value
 
-class MetsDocumentId(object):
+class AltRecordID(ET.ElementBase):
+    '''A subelement of metsHdr. Allows one to use alternative record identifier
+    values for the digital object represented by the METS document; the primary
+    record identifier is stored in the OBJID attribute in the root <mets>
+    document.'''
+
+    TAG = '{http://www.loc.gov/METS/}altRecordID'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'TYPE'])
+
+    @property
+    def id(self):
+        return self.attrib['ID']
+
+    @id.setter
+    def id(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def type(self):
+        return self.attrib['TYPE']
+
+    @type.setter
+    def type(self, value):
+        self.attrib['TYPE'] = value
+    
+
+class MetsDocumentId(ET.ElementBase):
     '''A subelement of metsHdr. Accepted attributes are ID and TYPE.'''
-    def __init__(self, **kwargs):
-        self.root = ET.Element("{%s}metsDocumentID" % (METS_NS,), 
-            nsmap=mets_nsmap)
-        for attrib, value in kwargs.items():
-            if attrib.upper() in ['ID', 'TYPE']:
-                self.root.attrib[attrib.upper()] = value
-            else:
-                #TODO: log an exception
-                pass
+
+    TAG = '{http://www.loc.gov/METS/}metsDocumentID'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'TYPE'])
+
+    @property
+    def id(self):
+        return self.attrib['ID']
+
+    @id.setter
+    def id(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def type(self):
+        return self.attrib['TYPE']
+
+    @type.setter
+    def type(self, value):
+        self.attrib['TYPE'] = value
+
+
+# class MetsDocumentId(object):
+#     '''A subelement of metsHdr. Accepted attributes are ID and TYPE.'''
+#     def __init__(self, **kwargs):
+#         self.root = ET.Element("{%s}metsDocumentID" % (METS_NS,), 
+#             nsmap=mets_nsmap)
+#         for attrib, value in kwargs.items():
+#             if attrib.upper() in ['ID', 'TYPE']:
+#                 self.root.attrib[attrib.upper()] = value
+#             else:
+#                 #TODO: log an exception
+#                 pass
 
 
 class MdRef(object):
@@ -210,18 +299,28 @@ class MdRef(object):
                     #TODO: log an exception
                     pass
 
-
-class MdWrap(object):
+class MdWrap(ET.ElementBase):
     '''A subelement of dmdSec, techMD, rightsMD, sourceMD and digiProvMd. It is
     used to wrap metadata from other schemas, such as PREMIS.'''
-    def __init__(self, **kwargs):
-        self.root = ET.Element("{%s}mdWrap" % (METS_NS), nsmap=mets_nsmap)
-        for attrib, value in kwargs.items():
-            if attrib.upper() in ['ID', 'LABEL', 
+    TAG = '{http://www.loc.gov/METS/}mdWrap'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'LABEL', 
                     # Metadata attribute group
                     'MDTYPE', 'OTHERMDTYPE', 'MDTYPEVERSION', 'MIMETYPE',
-                    'SIZE', 'CREATED', 'CHECKSUM', 'CHECKSUMTYPE']:
-                self.root.attrib[attrib.upper()] = value
+                    'SIZE', 'CREATED', 'CHECKSUM', 'CHECKSUMTYPE'])
+
+# class MdWrap(object):
+#     '''A subelement of dmdSec, techMD, rightsMD, sourceMD and digiProvMd. It is
+#     used to wrap metadata from other schemas, such as PREMIS.'''
+#     def __init__(self, **kwargs):
+#         self.root = ET.Element("{%s}mdWrap" % (METS_NS), nsmap=mets_nsmap)
+#         for attrib, value in kwargs.items():
+#             if attrib.upper() in ['ID', 'LABEL', 
+#                     # Metadata attribute group
+#                     'MDTYPE', 'OTHERMDTYPE', 'MDTYPEVERSION', 'MIMETYPE',
+#                     'SIZE', 'CREATED', 'CHECKSUM', 'CHECKSUMTYPE']:
+#                 self.root.attrib[attrib.upper()] = value
 
 
 class XmlData(object):
