@@ -24,8 +24,9 @@ STRICT = True
 def initialise_values(element, attribs_list):
     for key in element.attrib:
         if key in attribs_list:
-            if key == 'xlin_href':
-                element.set("{%s}%s" % (XLIN_NS, 'href'), element.attrib[key])
+            if key in ['href', 'arcrole', 'title', 'show', 'acutate', 'to',
+                'FROM']:
+                element.set("{%s}%s" % (XLIN_NS, key), element.attrib[key])
             del element.attrib[key]
         elif key not in attribs_list:
             print("WARN: {} not allowed in element {}".format(
@@ -46,12 +47,6 @@ class Mets(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}mets'
 
 # Generic parent classes
-
-# class metsHdr(object):
-#     def __init__(self, identifier=None):
-#         self.root = ET.Element("{%s}metsHdr" % (METS_NS), nsmap=mets_nsmap)
-#         if identifier:
-#             self.root.attrib['ID'] = identifier
 
 
 class metsHdr(ET.ElementBase):
@@ -100,9 +95,8 @@ class metsHdr(ET.ElementBase):
     
     @recordstatus.setter
     def recordstatus(self, value):
-        self.attrib['RECORDSTATUS'] = value
-    
-        
+        self.attrib['RECORDSTATUS'] = value    
+
 
 class DmdSec(ET.ElementBase):
 
@@ -128,19 +122,13 @@ class AmdSec(ET.ElementBase):
         initialise_values(self, ['ID'])
 
     @property
-    def id(self):
+    def ID(self):
         return self.attrib['ID']
 
-    @id.setter
-    def id(self, value):
+    @ID.setter
+    def ID(self, value):
         self.attrib['ID'] = value    
 
-
-# class AmdSec(object):
-#     def __init__(self, identifier=None):
-#         self.root = ET.Element("{%s}amdSec" % (METS_NS,), nsmap=mets_nsmap)
-#         if identifier:
-#             self.root.attrib['ID'] = identifier
 
 class BehaviorSec(ET.ElementBase):
 
@@ -150,11 +138,11 @@ class BehaviorSec(ET.ElementBase):
         initialise_values(self, ['ID'])
 
     @property
-    def id(self):
+    def ID(self):
         return self.attrib['ID']
 
-    @id.setter
-    def id(self, value):
+    @ID.setter
+    def ID(self, value):
         self.attrib['ID'] = value 
 
 
@@ -168,42 +156,42 @@ class Agent(ET.ElementBase):
         initialise_values(self, ['ID', 'ROLE', 'OTHERROLE', 'TYPE', 'OTHERTYPE'])
 
     @property
-    def id(self):
+    def ID(self):
         return self.attrib['ID']
 
-    @id.setter
-    def id(self, value):
+    @ID.setter
+    def ID(self, value):
         self.attrib['ID'] = value
     
     @property
-    def role(self):
+    def ROLE(self):
         return self.attrib['ROLE']
 
-    @role.setter
-    def role(self, value):
+    @ROLE.setter
+    def ROLE(self, value):
         self.attrib['ROLE'] = value
 
     @property
-    def otherrole(self):
+    def OTHERROLE(self):
         return self.attrib['OTHERROLE']
 
-    @otherrole.setter
-    def otherrole(self, value):
+    @OTHERROLE.setter
+    def OTHERROLE(self, value):
         self.attrib['OTHERROLE'] = value
 
     @property
-    def type(self):
+    def TYPE(self):
         return self.attrib['TYPE']
 
-    @type.setter
-    def type(self, value):
+    @TYPE.setter
+    def TYPE(self, value):
         self.attrib['TYPE'] = value
 
     @property
-    def othertype(self):
+    def OTHERTYPE(self):
         return self.attrib['OTHERTYPE']
 
-    @othertype.setter
+    @OTHERTYPE.setter
     def othertype(self, value):
         self.attrib['OTHERTYPE'] = value
 
@@ -219,11 +207,6 @@ class Note(ET.ElementBase):
 
     TAG = '{http://www.loc.gov/METS/}note'
 
-# class Note(object):
-#     '''A subelement of Agent. No attributes can be given - only a text value for the element.'''
-#     def __init__(self, value):
-#         self.root = ET.Element("{%s}note" % (METS_NS,), nsmap=mets_nsmap)
-#         self.root.text = value
 
 class AltRecordID(ET.ElementBase):
     '''A subelement of metsHdr. Allows one to use alternative record identifier
@@ -237,19 +220,19 @@ class AltRecordID(ET.ElementBase):
         initialise_values(self, ['ID', 'TYPE'])
 
     @property
-    def id(self):
+    def ID(self):
         return self.attrib['ID']
 
-    @id.setter
-    def id(self, value):
+    @ID.setter
+    def ID(self, value):
         self.attrib['ID'] = value
 
     @property
-    def type(self):
+    def TYPE(self):
         return self.attrib['TYPE']
 
-    @type.setter
-    def type(self, value):
+    @TYPE.setter
+    def TYPE(self, value):
         self.attrib['TYPE'] = value
     
 
@@ -262,19 +245,19 @@ class MetsDocumentId(ET.ElementBase):
         initialise_values(self, ['ID', 'TYPE'])
 
     @property
-    def id(self):
+    def ID(self):
         return self.attrib['ID']
 
-    @id.setter
-    def id(self, value):
+    @ID.setter
+    def ID(self, value):
         self.attrib['ID'] = value
 
     @property
-    def type(self):
+    def TYPE(self):
         return self.attrib['TYPE']
 
-    @type.setter
-    def type(self, value):
+    @TYPE.setter
+    def TYPE(self, value):
         self.attrib['TYPE'] = value
 
 
@@ -287,13 +270,121 @@ class MdRef(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}mdRef'
 
     def __init__(self):
-        initialise_values(self, ['ID', 'LABEL', 'XPTR', 'MDTYPE',
-            'OTHERMDTYPE', 'MDTYPEVERSION', 'MIMETYPE', 'SIZE', 'CREATED',
-            'CHECKSUM', 'CHECKSUMTYPE'])
-        for value in self.attrib:
-            if attrib.upper() == 'LOCTYPE':
-                initialise_values(self, ['ARK', 'URN', 'URL', 'PURL', 
-                    'HANDLE', 'DOI', 'OTHER'])
+        initialise_values(self, ['ID', 'LABEL', 'XPTR', 'LOCTYPE', 
+            'OTHERLOCTYPE', 'MDTYPE', 'OTHERMDTYPE', 'MDTYPEVERSION',
+            'MIMETYPE', 'SIZE', 'CREATED','CHECKSUM', 'CHECKSUMTYPE', 'href'])
+    
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+    
+    @property
+    def LABEL(self):
+        return self.attrib['LABEL']
+
+    @LABEL.setter
+    def LABEL(self, value):
+        self.attrib['LABEL'] = value
+
+    @property
+    def XPTR(self):
+        return self.attrib['XPTR']
+
+    @XPTR.setter
+    def XPTR(self, value):
+        self.attrib['XPTR'] = value
+
+    @property
+    def LOCTYPE(self):
+        return self.attrib['LOCTYPE']
+
+    @LOCTYPE.setter
+    def LOCTYPE(self, value):
+        self.attrib['LOCTYPE'] = value
+
+    @property
+    def OTHERLOCTYPE(self):
+        return self.attrib['OTHERLOCTYPE']
+
+    @OTHERLOCTYPE.setter
+    def OTHERLOCTYPE(self, value):
+        self.attrib['OTHERLOCTYPE'] = value
+
+    @property
+    def MDTYPE(self):
+        return self.attrib['MDTYPE']
+
+    @MDTYPE.setter
+    def MDTYPE(self, value):
+        self.attrib['MDTYPE'] = value
+
+    @property
+    def OTHERMDTYPE(self):
+        return self.attrib['OTHERMDTYPE']
+
+    @OTHERMDTYPE.setter
+    def OTHERMDTYPE(self, value):
+        self.attrib['OTHERMDTYPE'] = value
+
+    @property
+    def MDTYPEVERSION(self):
+        return self.attrib['MDTYPEVERSION']
+
+    @MDTYPEVERSION.setter
+    def MDTYPEVERSION(self, value):
+        self.attrib['MDTYPEVERSION'] = value
+
+    @property
+    def MIMETYPE(self):
+        return self.attrib['MIMETYPE']
+
+    @MIMETYPE.setter
+    def MIMETYPE(self, value):
+        self.attrib['MIMETYPE'] = value
+
+    @property
+    def SIZE(self):
+        return self.attrib['SIZE']
+
+    @SIZE.setter
+    def SIZE(self, value):
+        self.attrib['SIZE'] = value
+
+    @property
+    def CREATED(self):
+        return self.attrib['CREATED']
+
+    @CREATED.setter
+    def CREATED(self, value):
+        self.attrib['CREATED'] = value
+
+    @property
+    def CHECKSUM(self):
+        return self.attrib['CHECKSUM']
+
+    @CHECKSUM.setter
+    def CHECKSUM(self, value):
+        self.attrib['CHECKSUM'] = value
+
+    @property
+    def CHECKSUMTYPE(self):
+        return self.attrib['CHECKSUMTYPE']
+
+    @CHECKSUMTYPE.setter
+    def CHECKSUMTYPE(self, value):
+        self.attrib['CHECKSUMTYPE'] = value
+
+    @property
+    def href(self):
+        return self.attrib['{http://www.w3.org/1999/xlink}href']
+
+    @href.setter
+    def href(self, value):
+        self.attrib['{http://www.w3.org/1999/xlink}href'] = value
 
 
 class MdWrap(ET.ElementBase):
@@ -306,6 +397,86 @@ class MdWrap(ET.ElementBase):
                     # Metadata attribute group
                     'MDTYPE', 'OTHERMDTYPE', 'MDTYPEVERSION', 'MIMETYPE',
                     'SIZE', 'CREATED', 'CHECKSUM', 'CHECKSUMTYPE'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+    
+    @property
+    def LABEL(self):
+        return self.attrib['LABEL']
+
+    @LABEL.setter
+    def LABEL(self, value):
+        self.attrib['LABEL'] = value
+
+    @property
+    def MDTYPE(self):
+        return self.attrib['MDTYPE']
+
+    @MDTYPE.setter
+    def MDTYPE(self, value):
+        self.attrib['MDTYPE'] = value
+
+    @property
+    def OTHERMDTYPE(self):
+        return self.attrib['OTHERMDTYPE']
+
+    @OTHERMDTYPE.setter
+    def OTHERMDTYPE(self, value):
+        self.attrib['OTHERMDTYPE'] = value
+
+    @property
+    def MDTYPEVERSION(self):
+        return self.attrib['MDTYPEVERSION']
+
+    @MDTYPEVERSION.setter
+    def MDTYPEVERSION(self, value):
+        self.attrib['MDTYPEVERSION'] = value
+
+    @property
+    def MIMETYPE(self):
+        return self.attrib['MIMETYPE']
+
+    @MIMETYPE.setter
+    def MIMETYPE(self, value):
+        self.attrib['MIMETYPE'] = value
+
+    @property
+    def SIZE(self):
+        return self.attrib['SIZE']
+
+    @SIZE.setter
+    def SIZE(self, value):
+        self.attrib['SIZE'] = value
+
+    @property
+    def CREATED(self):
+        return self.attrib['CREATED']
+
+    @CREATED.setter
+    def CREATED(self, value):
+        self.attrib['CREATED'] = value
+
+    @property
+    def CHECKSUM(self):
+        return self.attrib['CHECKSUM']
+
+    @CHECKSUM.setter
+    def CHECKSUM(self, value):
+        self.attrib['CHECKSUM'] = value
+
+    @property
+    def CHECKSUMTYPE(self):
+        return self.attrib['CHECKSUMTYPE']
+
+    @CHECKSUMTYPE.setter
+    def CHECKSUMTYPE(self, value):
+        self.attrib['CHECKSUMTYPE'] = value
 
 
 class XmlData(ET.ElementBase):
@@ -329,11 +500,6 @@ class BinData(ET.ElementBase):
 
     TAG = '{http://www.loc.gov/METS/}xmlData'
 
-# class BinData(object):
-#     '''A subelement of MdWrap or FContent. Is used to contain base64-encoded binary data.'''
-#     def __init__(self):
-#         self.root = ET.Element("{%s}binData" % (METS_NS), nsmap=mets_nsmap)
-
 
 
 # Generic children of AMD Parent
@@ -347,85 +513,56 @@ class MdExt(ET.ElementBase):
         initialise_values(self, ['ID', 'ADMID', 'CREATED', 'STATUS'])
 
     @property
-    def id(self):
+    def ID(self):
         return self.attrib['ID']
 
-    @id.setter
-    def id(self, value):
+    @ID.setter
+    def ID(self, value):
         self.attrib['ID'] = value
     
     @property
-    def admid(self):
+    def ADMID(self):
         return self.attrib['ADMID']
 
-    @admid.setter
-    def admid(self, value):
+    @ADMID.setter
+    def ADMID(self, value):
         self.attrib['ADMID'] = value
 
     @property
-    def created(self):
+    def CREATED(self):
         return self.attrib['CREATED']
 
-    @created.setter
-    def created(self, value):
+    @CREATED.setter
+    def CREATED(self, value):
         self.attrib['CREATED'] = value
 
     @property
-    def status(self):
+    def STATUS(self):
         return self.attrib['STATUS']
 
-    @status.setter
-    def status(self, value):
+    @STATUS.setter
+    def STATUS(self, value):
         self.attrib['STATUS'] = value
     
-    
-
-
-# class MdExt(object):
-#     def __init__(self, element=None,  **kwargs):
-#         self.root = ET.Element("{%s}%s" % (METS_NS, element), nsmap=mets_nsmap)
-#         for attrib, value in kwargs.items():
-#             self.root.attrib[attrib] = value
-        # self.mdWrap = ET.SubElement(self.root,
-        #     "{%s}mdWrap" % METS_NS, MDTYPE="OTHER", OTHERMDTYPE="dnx")
-
 
 class TechMd(MdExt):
     def _init(self, **kwargs):
         super(TechMd, self)._init("techMD", **kwargs)
-
-# class TechMd(MdExt):
-#     def __init__(self, **kwargs):
-#         super(TechMd, self).__init__(element="techMD", **kwargs)
 
 
 class RightsMd(MdExt):
     def _init(self, **kwargs):
         super(RightsMd, self)._init("rightsMD",**kwargs)
 
-# class RightsMd(MdExt):
-#     def __init__(self, **kwargs):
-#         super(RightsMd, self).__init__(element="rightsMD", **kwargs)
-
 
 class SourceMd(MdExt):
     def _init(self, **kwargs):
         super(SourceMd, self)._init("sourceMD", **kwargs)
 
-# class SourceMd(MdExt):
-#     def __init__(self, **kwargs):
-#         super(SourceMd, self).__init__(element="sourceMD", **kwargs)
 
 class DigiprovMd(MdExt):
     def _init(self, **kwargs):
         super(DigiprovMd, self)._init("digiprovMD", **kwargs)
-
-# class DigiprovMd(MdExt):
-#     def __init__(self, **kwargs):
-#         super(DigiprovMd, self).__init__(element="digiprovMD", **kwargs)
-
-
-# fileSec classes
 
 
 class FileSec(ET.ElementBase):
@@ -434,10 +571,6 @@ class FileSec(ET.ElementBase):
     comprise the digital object being described in the METS document. '''
     TAG = '{http://www.loc.gov/METS/}fileSec'
 
-# class FileSec(object):
-#     def __init__(self):
-#         self.root = ET.Element("{%s}fileSec" % (METS_NS), nsmap=mets_nsmap)
-
 
 class FileGrp(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}fileGrp'
@@ -445,14 +578,38 @@ class FileGrp(ET.ElementBase):
     def _init(self):
         initialise_values(self, ['ID', 'VERSDATE', 'ADMID', 'USE'])
 
-# class FileGrp(object):
-#     '''A subelement of fileSec. A fileGrp can contain nested fileGrps, 
-#     or file elements.'''
-#     def __init__(self, **kwargs):
-#         self.root = ET.Element("{%s}fileGrp" % (METS_NS,), nsmap=mets_nsmap)
-#         for attrib, value in kwargs.items():
-#             if attrib.upper() in ['ID', 'VERSDATE', 'ADMID', 'USE']:
-#                 self.root.attrib[attrib.upper()] = value
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def VERSDATE(self):
+        return self.attrib['VERSDATE']
+
+    @VERSDATE.setter
+    def VERSDATE(self, value):
+        self.attrib['VERSDATE'] = value
+
+    @property
+    def ADMID(self):
+        return self.attrib['ADMID']
+
+    @ADMID.setter
+    def ADMID(self, value):
+        self.attrib['ADMID'] = value
+
+    @property
+    def USE(self):
+        return self.attrib['USE']
+
+    @USE.setter
+    def USE(self, value):
+        self.attrib['USE'] = value
+    
 
 
 class File(ET.ElementBase):
@@ -463,111 +620,124 @@ class File(ET.ElementBase):
                 'GROUPID', 'USE', 'BEGIN', 'END', 'BETYPE'])
 
     @property
-    def id(self):
+    def ID(self):
         return self.attrib['ID']
 
-    @id.setter
-    def id(self, value):
+    @ID.setter
+    def ID(self, value):
         self.attrib['ID'] = value
 
     @property
-    def seq(self):
+    def SEQ(self):
         return self.attrib['SEQ']
 
-    @seq.setter
-    def seq(self, value):
+    @SEQ.setter
+    def SEQ(self, value):
         self.attrib['SEQ'] = value
 
     @property
-    def ownerid(self):
+    def OWNERID(self):
         return self.attrib['OWNERID']
 
-    @ownerid.setter
-    def ownerid(self, value):
+    @OWNERID.setter
+    def OWNERID(self, value):
         self.attrib['OWNERID'] = value
 
     @property
-    def admid(self):
+    def ADMID(self):
         return self.attrib['ADMID']
 
-    @admid.setter
-    def admid(self, value):
+    @ADMID.setter
+    def ADMID(self, value):
         self.attrib['ADMID'] = value
 
     @property
-    def dmdid(self):
+    def DMDID(self):
         return self.attrib['DMDID']
 
-    @dmdid.setter
-    def dmdid(self, value):
+    @DMDID.setter
+    def DMDID(self, value):
         self.attrib['DMDID'] = value
 
     @property
-    def use(self):
+    def USE(self):
         return self.attrib['USE']
 
-    @use.setter
-    def use(self, value):
+    @USE.setter
+    def USE(self, value):
         self.attrib['USE'] = value
 
     @property
-    def begin(self):
+    def BEGIN(self):
         return self.attrib['BEGIN']
 
-    @begin.setter
-    def begin(self, value):
+    @BEGIN.setter
+    def BEGIN(self, value):
         self.attrib['BEGIN'] = value
 
     @property
-    def end(self):
+    def END(self):
         return self.attrib['END']
 
-    @end.setter
-    def end(self, value):
+    @END.setter
+    def END(self, value):
         self.attrib['END'] = value
 
     @property
-    def betype(self):
+    def BETYPE(self):
         return self.attrib['BETYPE']
 
-    @betype.setter
-    def end(self, value):
+    @BETYPE.setter
+    def BETYPE(self, value):
         self.attrib['BETYPE'] = value
-    
-
-# class File(object):
-#     '''A subelement of fileGrp. Provides access to the content files for the
-#     digital object being described by the METS document.'''
-#     def __init__(self, **kwargs):
-#         self.root = ET.Element("{%s}file" % (METS_NS,), nsmap=mets_nsmap)
-#         for attrib, value in kwargs.items():
-#             if attrib.upper() in ['ID', 'SEQ', 'OWNERID', 'ADMID', 'DMDID',
-#                 'GROUPID', 'USE', 'BEGIN', 'END', 'BETYPE']:
-#                 self.root.attrib[attrib.upper()] = value
 
 
 class FLocat(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}FLocat'
 
     def _init(self):
-        initialise_values(self, ['ID', 'USE', 'LOCTYPE', 'OTHERLOCTYPE', 'xlin_href'])
+        initialise_values(self, ['ID', 'USE', 'LOCTYPE', 'OTHERLOCTYPE', 'href'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+    
+    @property
+    def USE(self):
+        return self.attrib['USE']
+
+    @USE.setter
+    def USE(self, value):
+        self.attrib['USE'] = value
+
+    @property
+    def LOCTYPE(self):
+        return self.attrib['LOCTYPE']
+
+    @LOCTYPE.setter
+    def LOCTYPE(self, value):
+        self.attrib['LOCTYPE'] = value
+
+    @property
+    def OTHERLOCTYPE(self):
+        return self.attrib['OTHERLOCTYPE']
+
+    @OTHERLOCTYPE.setter
+    def OTHERLOCTYPE(self, value):
+        self.attrib['OTHERLOCTYPE'] = value
+
+    @property
+    def href(self):
+        return self.attrib['{http://www.w3.org/1999/xlink}href']
+
+    @href.setter
+    def href(self, value):
+        self.attrib['{http://www.w3.org/1999/xlink}href'] = value
         
-
-
-# class FLocat(object):
-#     '''A subelement of File. Provides a pointer to the location of a content file.
-#     It uses the XLink reference syntax to provide linking information indicating the 
-#     actual location of the content file, along with the other attributes specifying
-#     additional information. NOTE: <FLocat> is an empty element. The location of the
-#     resource pointed to MUST be stored in the xlink:href attribute.'''
-#     def __init__(self, **kwargs):
-#         self.root = ET.Element("{%s}FLocat" % (METS_NS), nsmap=xlin_nsmap)
-#         for attrib, value in kwargs.items():
-#             if attrib.upper in ['ID', 'USE', 'LOCTYPE', 'OTHERLOCTYPE']:
-#                 self.root.attrib[attrib.upper()] = value
-#             if attrib == "xlin_href":
-#                 self.root.set("{%s}%s" % (XLIN_NS, attrib), value)
-
 
 class FContent(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}FContent'
@@ -592,28 +762,13 @@ class FContent(ET.ElementBase):
         self.attrib['USE'] = value
     
 
-# class FContent(object):
-#     '''A subelement of File. It is used to identify a content file contained internally
-#     within a METS document. It must either be Base64 encoded and contained within the
-#     subsidiart <binData> wrapper element, or consist of XML information and be contained
-#     within the subsidiary <xmlData> wrapper element.'''
-#     def __init__(self, **kwargs):
-#         self.root = ET.Element("{%s}FContent" % (METS_NS), nsmap=mets_nsmap)
-#         for attrib, value in kwargs.items():
-#             if attrib.upper in ['ID', 'USE']:
-#                 self.root.attrib[attrib.upper()] = value
-#             else:
-#                 #TODO: add exception
-#                 pass
-
-
 class Stream(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}stream'
 
     def _init(self):
         # "streamType" is something of an anomaly here, as it is the only
-        # attribute whose spelling is in camelCase. as such, we should case
-        # for if it is supplied in upper-case
+        # attribute whose spelling is in camelCase (except for xlin:href). 
+        # As such, we should case for if it is supplied in all-caps.
         for attrib_value in self.attrib:
             if attrib_value == 'STREAMTYPE':
                 self.attrib['streamType'] = self.attrib[attrib_value]
@@ -686,26 +841,6 @@ class Stream(ET.ElementBase):
     def streamType(self, value):
         self.attrib['streamType'] = value
 
-# class Stream(object):
-#     '''A subelement of File. A component byte stream element <stream> may
-#     be composed of one or more subsidiary streams. An MPEG4 file, for example,
-#     might contain separate audio and video streams, each of which is
-#     associated with technical metadata. The repeatable <stream> element
-#     provides a mechanism to record the existence of separate data streams
-#     within a particular file, and the opportunity to associate <dmdSec> 
-#     and <amdSec> with those subsidiary data streams if desired.'''
-#     def __init__(self, **kwargs):
-#         self.root = ET.Element("{%s}stream" % (METS_NS), nsmap=mets_nsmap)
-#         for attrib, value in kwargs.items():
-#             if attrib.upper() in ['ID', 'OWNERID', 'ADMID', 'DMDID', 'BEGIN',
-#                         'END', 'BETYPE']:
-#                 self.root.attrib[attrib.upper()] = value    
-#             elif attrib.upper() == 'STREAMTYPE':
-#                 self.root.attrib['streamType'] = value
-#             else:
-#                 # TODO: add exception
-#                 pass
-
 
 class TransformFile(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}transformFile'
@@ -714,22 +849,53 @@ class TransformFile(ET.ElementBase):
         initialise_values(self, ['ID', 'TRANSFORMTYPE', 'TRANSFORMALGORITHM',
                     'TRANSFORMKEY', 'TRANSFORMBEHAVIOR', 'TRANSFORMORDER'])
 
-# class TransformFile(object):
-#     '''A subelement of File. The transform file element <transformFile>
-#     provides a means to access any subsidiary files listed below a <file>
-#     element by indicating the steps required to "unpack" or transform the
-#     subsidiary files. This element is repeatable and might provide a link to a
-#     <behavior> in the <behaviorSec> that performs the transformation. '''
-#     def __init__(self, **kwargs):
-#         self.root = ET.Element("{%s}transformFile" % (METS_NS), 
-#             nsmap=mets_nsmap)
-#         for attrib, value in kwargs.items():
-#             if attrib.upper() in ['ID', 'TRANSFORMTYPE', 'TRANSFORMALGORITHM',
-#                     'TRANSFORMKEY', 'TRANSFORMBEHAVIOR', 'TRANSFORMORDER']:
-#                 self.root.attrib[attrib.upper()] = value
-#             else:
-#                 # TODO: add exception
-#                 pass
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def TRANSFORMTYPE(self):
+        return self.attrib['TRANSFORMTYPE']
+
+    @TRANSFORMTYPE.setter
+    def TRANSFORMTYPE(self, value):
+        self.attrib['TRANSFORMTYPE'] = value
+
+    @property
+    def TRANSFORMALGORITHM(self):
+        return self.attrib['TRANSFORMALGORITHM']
+
+    @TRANSFORMALGORITHM.setter
+    def TRANSFORMALGORITHM(self, value):
+        self.attrib['TRANSFORMALGORITHM'] = value
+    
+    @property
+    def TRANSFORMKEY(self):
+        return self.attrib['TRANSFORMKEY']
+
+    @TRANSFORMKEY.setter
+    def TRANSFORMKEY(self, value):
+        self.attrib['TRANSFORMKEY'] = value
+
+    @property
+    def TRANSFORMBEHAVIOR(self):
+        return self.attrib['TRANSFORMBEHAVIOR']
+
+    @TRANSFORMBEHAVIOR.setter
+    def TRANSFORMBEHAVIOR(self, value):
+        self.attrib['TRANSFORMBEHAVIOR'] = value
+
+    @property
+    def TRANSFORMORDER(self):
+        return self.attrib['TRANSFORMORDER']
+
+    @TRANSFORMORDER.setter
+    def TRANSFORMORDER(self, value):
+        self.attrib['TRANSFORMORDER'] = value
 
 
 # structMap classes
@@ -740,28 +906,539 @@ class StructMap(ET.ElementBase):
     def _init(self):
         initialise_values(self, ['ID', 'TYPE', 'LABEL'])
 
-# class StructMap(object):
-#     '''The structural map section <structMap> is the heart of a METS document.
-#     It provides a means for organising the digital content represented by the
-#     <file> elements in the <fileSec> of the METS document into a coherent
-#     hierarchical structure. Such a hierarchical structure can be presented to
-#     users to facilitate their comprehension and navigation of the digital 
-#     content. The structure consists of a series of nested <div> elements. A
-#     <div> element may directly point to content via <fptr> (file pointer)
-#     elements or <mptr> (METS pointer) elements.'''
-#     def __init__(self, **kwargs):
-#         self.root = ET.Element("{%s}structMap" % (METS_NS,), nsmap=mets_nsmap)
-#         for attrib, value in kwargs.items():
-#             if attrib.upper() in ['ID', 'TYPE', 'LABEL']:
-#                 self.root.attrib[attrib.upper()] = value
-#             else:
-#                 # TOD: add exception
-#                 pass
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def TYPE(self):
+        return self.attrib['TYPE']
+
+    @TYPE.setter
+    def TYPE(self, value):
+        self.attrib['TYPE'] = value
+
+    @property
+    def LABEL(self):
+        return self.attrib['LABEL']
+
+    @LABEL.setter
+    def LABEL(self, value):
+        self.attrib['LABEL'] = value
+    
+
 
 class Div(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}div'
 
-# class Div(object):
-#     '''A subelement of METS.'''
-#     def __init__(self, **kwargs):
-#         self.root
+    def _init(self):
+        initialise_values(self, ['ID', 'ORDER', 'ORDERLABEL', 'LABEL',
+            'DMDID', 'ADMID', 'TYPE', 'CONTENTIDS'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def ORDER(self):
+        return self.attrib['ORDER']
+
+    @ORDER.setter
+    def ORDER(self, value):
+        self.attrib['ORDER'] = value
+
+    @property
+    def ORDERLABEL(self):
+        return self.attrib['ORDERLABEL']
+
+    @ORDERLABEL.setter
+    def ORDERLABEL(self, value):
+        self.attrib['ORDERLABEL'] = value
+
+    @property
+    def LABEL(self):
+        return self.attrib['LABEL']
+
+    @LABEL.setter
+    def LABEL(self, value):
+        self.attrib['LABEL'] = value
+
+    @property
+    def DMDID(self):
+        return self.attrib['DMDID']
+
+    @DMDID.setter
+    def DMDID(self, value):
+        self.attrib['DMDID'] = value
+
+    @property
+    def ADMID(self):
+        return self.attrib['ADMID']
+
+    @DMDID.setter
+    def ADMID(self, value):
+        self.attrib['ADMID'] = value
+
+    @property
+    def TYPE(self):
+        return self.attrib['TYPE']
+
+    @TYPE.setter
+    def TYPE(self, value):
+        self.attrib['TYPE'] = value
+
+    @property
+    def CONTENTIDS(self):
+        return self.attrib['CONTENTIDS']
+
+    @CONTENTIDS.setter
+    def CONTENTIDS(self, value):
+        self.attrib['CONTENTIDS'] = value
+
+class Mptr(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}mptr'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'CONTENTIDS', 'LOCTYPE',
+            'OTHERLOCTYPE', ])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def CONTENTIDS(self):
+        return self.attrib['CONTENTIDS']
+
+    @CONTENTIDS.setter
+    def CONTENTIDS(self, value):
+        self.attrib['CONTENTIDS'] = value
+
+    @property
+    def LOCTYPE(self):
+        return self.attrib['LOCTYPE']
+
+    @LOCTYPE.setter
+    def LOCTYPE(self, value):
+        self.attrib['LOCTYPE'] = value
+
+    @property
+    def OTHERLOCTYPE(self):
+        return self.attrib['OTHERLOCTYPE']
+
+    @OTHERLOCTYPE.setter
+    def OTHERLOCTYPE(self, value):
+        self.attrib['OTHERLOCTYPE'] = value
+
+
+class Fptr(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}fptr'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'FILEID', 'CONTENTIDS'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def FILEID(self):
+        return self.attrib['FILEID']
+
+    @FILEID.setter
+    def FILEID(self, value):
+        self.attrib['FILEID'] = value
+
+    @property
+    def CONTENTIDS(self):
+        return self.attrib['CONTENTIDS']
+
+    @CONTENTIDS.setter
+    def CONTENTIDS(self, value):
+        self.attrib['CONTENTIDS'] = value
+
+
+class Par(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}par'
+
+    def _init(self):
+        initialise_values(self, 'ID')
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+    
+
+class Seq(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}seq'
+
+    def _init(self):
+        initialise_values(self, ['ID'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+
+class Area(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}area'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'FILEID', 'SHAPE', 'COORDS',
+            'BEGIN', 'END', 'BETYPE', 'EXTENT', 'EXTTYPE', 'ADMID',
+            'CONTENTIDS'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def FILEID(self):
+        return self.attrib['FILEID']
+
+    @FILEID.setter
+    def FILEID(self, value):
+        self.attrib['FILEID'] = value
+
+    @property
+    def SHAPE(self):
+        return self.attrib['SHAPE']
+
+    @SHAPE.setter
+    def SHAPE(self, value):
+        self.attrib['SHAPE'] = value
+
+    @property
+    def COORDS(self):
+        return self.attrib['COORDS']
+
+    @COORDS.setter
+    def COORDS(self, value):
+        self.attrib['COORDS'] = value
+
+    @property
+    def BEGIN(self):
+        return self.attrib['BEGIN']
+
+    @BEGIN.setter
+    def BEGIN(self, value):
+        self.attrib['BEGIN'] = value
+    
+    @property
+    def END(self):
+        return self.attrib['END']
+
+    @END.setter
+    def END(self, value):
+        self.attrib['END'] = value
+
+    @property
+    def BETYPE(self):
+        return self.attrib['BETYPE']
+
+    @BETYPE.setter
+    def BETYPE(self, value):
+        self.attrib['BETYPE'] = value
+    
+    @property
+    def EXTENT(self):
+        return self.attrib['EXTENT']
+
+    @EXTENT.setter
+    def EXTENT(self, value):
+        self.attrib['EXTENT'] = value
+
+    @property
+    def EXTTYPE(self):
+        return self.attrib['EXTTYPE']
+
+    @EXTTYPE.setter
+    def EXTTYPE(self, value):
+        self.attrib['EXTTYPE'] = value
+
+    @property
+    def ADMID(self):
+        return self.attrib['ADMID']
+
+    @ADMID.setter
+    def ADMID(self, value):
+        self.attrib['ADMID'] = value
+
+    @property
+    def CONTENTIDS(self):
+        return self.attrib['CONTENTIDS']
+
+    @CONTENTIDS.setter
+    def CONTENTIDS(self, value):
+        self.attrib['CONTENTIDS'] = value
+
+
+class SmLink(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}smLink'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'arcrole', 'title', 'show',
+            'actuate', 'to', 'from'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def arcrole(self):
+        return self.attrib['{http://www.w3.org/1999/xlink}arcrole']
+
+    @arcrole.setter
+    def arcrole(self, value):
+        self.attrib['{http://www.w3.org/1999/xlink}arcrole'] = value
+
+    @property
+    def title(self):
+        return self.attrib['{http://www.w3.org/1999/xlink}title']
+
+    @title.setter
+    def title(self, value):
+        self.attrib['{http://www.w3.org/1999/xlink}title'] = value
+
+    @property
+    def show(self):
+        return self.attrib['{http://www.w3.org/1999/xlink}show']
+
+    @show.setter
+    def show(self, value):
+        self.attrib['{http://www.w3.org/1999/xlink}show'] = value
+
+    @property
+    def actuate(self):
+        return self.attrib['{http://www.w3.org/1999/xlink}actuate']
+
+    @actuate.setter
+    def actuate(self, value):
+        self.attrib['{http://www.w3.org/1999/xlink}actuate'] = value
+
+    @property
+    def to(self):
+        return self.attrib['{http://www.w3.org/1999/xlink}to']
+
+    @to.setter
+    def to(self, value):
+        self.attrib['{http://www.w3.org/1999/xlink}to'] = value
+
+    @property
+    def FROM(self):
+        return self.attrib['{http://www.w3.org/1999/xlink}from']
+
+    @to.setter
+    def FROM(self, value):
+        self.attrib['{http://www.w3.org/1999/xlink}from'] = value
+
+
+class SmLinkGrp(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}smLinkGrp'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'ARCLINKORDER'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def ARCLINKORDER(self):
+        return self.attrib['ARCLINKORDER']
+
+    @ARCLINKORDER.setter
+    def ARCLINKORDER(self, value):
+        self.attrib['ARCLINKORDER'] = value
+    
+
+class SmLocatorLink(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}smLocatorLink'
+
+    def _init(self):
+        initialise_values(self, ['ID'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self):
+        self.attrib['ID'] = value
+
+
+class SmArcLink(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}smArcLink'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'ARCTYPE', 'ADMID'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self):
+        self.attrib['ID'] = value
+
+    @property
+    def ARCTYPE(self):
+        return self.attrib['ARCTYPE']
+
+    @ID.setter
+    def ARCTYPE(self):
+        self.attrib['ARCTYPE'] = value
+
+    @property
+    def ADMID(self):
+        return self.attrib['ADMID']
+
+    @ID.setter
+    def ADMID(self):
+        self.attrib['ADMID'] = value
+
+
+class Behavior(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}behavior'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'STRUCTID', 'BTYPE', 'CREATED',
+            'LABEL', 'GROUPID', 'ADMID'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+    
+    @property
+    def STRUCTID(self):
+        return self.attrib['STRUCTID']
+
+    @STRUCTID.setter
+    def STRUCTID(self, value):
+        self.attrib['STRUCTID'] = value
+
+    @property
+    def BTYPE(self):
+        return self.attrib['BTYPE']
+
+    @BTYPE.setter
+    def BTYPE(self, value):
+        self.attrib['BTYPE'] = value
+
+    @property
+    def CREATED(self):
+        return self.attrib['CREATED']
+
+    @CREATED.setter
+    def CREATED(self, value):
+        self.attrib['CREATED'] = value
+
+    @property
+    def LABEL(self):
+        return self.attrib['LABEL']
+
+    @LABEL.setter
+    def LABEL(self, value):
+        self.attrib['LABEL'] = value
+
+    @property
+    def GROUPID(self):
+        return self.attrib['GROUPID']
+
+    @GROUPID.setter
+    def GROUPID(self, value):
+        self.attrib['GROUPID'] = value
+
+    @property
+    def ADMID(self):
+        return self.attrib['ADMID']
+
+    @ADMID.setter
+    def ADMID(self, value):
+        self.attrib['ADMID'] = value
+
+
+class InterfaceDef(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}interfaceDef'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'LABEL'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def LABEL(self):
+        return self.attrib['LABEL']
+
+    @LABEL.setter
+    def LABEL(self, value):
+        self.attrib['LABEL'] = value
+
+
+class Mechanism(ET.ElementBase):
+    TAG = '{http://www.loc.gov/METS/}mechanism'
+
+    def _init(self):
+        initialise_values(self, ['ID', 'LABEL'])
+
+    @property
+    def ID(self):
+        return self.attrib['ID']
+
+    @ID.setter
+    def ID(self, value):
+        self.attrib['ID'] = value
+
+    @property
+    def LABEL(self):
+        return self.attrib['LABEL']
+
+    @LABEL.setter
+    def LABEL(self, value):
+        self.attrib['LABEL'] = value
