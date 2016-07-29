@@ -1,5 +1,5 @@
 import os
-import mets
+import pymets.mets as mets
 from lxml import etree as ET
 from lxml import isoschematron
 # import xml.etree.ElementTree as ET
@@ -8,7 +8,9 @@ mets_document = mets.Mets()
 
 # hdr = mets.metsHdr(id='ie1', admid='888', is_horse='true')
 # hdr = mets.metsHdr(id='ie1')
-hdr = mets.metsHdr(ID='ie1', IS_HORSE='true')
+hdr_props = {'ID': 'ie2'}
+hdr = mets.MetsHdr(ID='ie1', IS_HORSE='true')
+hdr2 = mets.MetsHdr(attrib=hdr_props)
 hdr.createdate = '2015-05-12 23:49:23'
 agent = mets.Agent(ID='agent1', ROLE="CREATOR")
 hdr.append(agent)
@@ -17,7 +19,7 @@ agent.append(name1)
 note1 = mets.Note('purloined from the Mighty King of Hoegaarden')
 agent.append(note1)
 
-
+mets_document.append(hdr2)
 
 alt_record_id_1 = mets.AltRecordID(TYPE='Boat registration ID')
 alt_record_id_1.text = '009911191'

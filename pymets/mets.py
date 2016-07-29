@@ -1,5 +1,5 @@
 from lxml import etree as ET
-# import xml.etree.ElementTree as ET
+# import xml.etree.ElementTree as ET # This does not work, as we use components that are only available in lxml
 
 __version__ = '0.1'
 
@@ -27,20 +27,12 @@ def initialise_values(element, attribs_list):
             if key in ['href', 'arcrole', 'title', 'show', 'acutate', 'to',
                 'FROM']:
                 element.set("{%s}%s" % (XLIN_NS, key), element.attrib[key])
-            del element.attrib[key]
+                del element.attrib[key]
         elif key not in attribs_list:
             print("WARN: {} not allowed in element {}".format(
                 key, element.TAG))
             if STRICT:
                 del element.attrib[key]
-        # # check if the attribs are lower-case
-        # if key.upper() in attribs_list and key != key.upper():
-        #     element.attrib[key.upper()] = element.attrib[key]
-        #     del element.attrib[key]
-        # elif key.upper() not in attribs_list:
-        #     print("WARN: {} not allowed in element {}".format(
-        #         key, element.TAG))
-        #     del element.attrib[key]
 
 
 class Mets(ET.ElementBase):
@@ -49,7 +41,7 @@ class Mets(ET.ElementBase):
 # Generic parent classes
 
 
-class metsHdr(ET.ElementBase):
+class MetsHdr(ET.ElementBase):
 
     TAG = '{http://www.loc.gov/METS/}metsHdr'
 
@@ -498,7 +490,7 @@ class BinData(ET.ElementBase):
     '''The binary data wrapper element <binData> is used to contain Base64
     encoded metadata.'''
 
-    TAG = '{http://www.loc.gov/METS/}xmlData'
+    TAG = '{http://www.loc.gov/METS/}binData'
 
 
 
