@@ -893,7 +893,7 @@ class TransformFile(ET.ElementBase):
 # structMap classes
 
 class StructMap(ET.ElementBase):
-    TAG = '{http://www.loc.gov/METS/}transformFile'
+    TAG = '{http://www.loc.gov/METS/}structMap'
 
     def _init(self):
         initialise_values(self, ['ID', 'TYPE', 'LABEL'])
