@@ -7,6 +7,54 @@ from collections import OrderedDict
 def build_mets():
     return mets.Mets()
 
+def build_mets_components(mets_doc,
+                          ie_dmd=None,
+                          ie_id=None,
+                          pres_master_dir=None,
+                          modified_master_dir=None,
+                          access_derivative_dir=None,
+                          digital_original=False,
+                          input_dir=None):
+
+    flgrp_dict = []
+
+    if pres_master_dir != None and modified_master_dir != None and access_derivative_dir != None:
+        parse_rep_directory(mets_doc, pres_master_dir, 'PRESERVATION_MASTER', ie_id + "-rep1", digital_original)
+        flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=pres_master_dir, rep_id=ie_id + "-rep1", pres_type="Preservation Master", input_dir=input_dir))
+        parse_rep_directory(mets_doc, modified_master_dir, 'MODIFIED_MASTER', ie_id + "-rep2", digital_original)
+        flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=modified_master_dir, rep_id=ie_id + "-rep2", pres_type="Modified Master", input_dir=input_dir))
+        parse_rep_directory(mets_doc, access_derivative_dir, 'DERIVATIVE_COPY', ie_id + "-rep3", digital_original)
+        flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=access_derivative_dir, rep_id=ie_id + "-rep3", pres_type="Derivative Copy", input_dir=input_dir))
+
+    elif pres_master_dir != None and access_derivative_dir != None:
+        parse_rep_directory(mets_doc, pres_master_dir, 'PRESERVATION_MASTER', ie_id + "-rep1", digital_original)
+        flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=pres_master_dir, rep_id=ie_id + "-rep1", pres_type="Preservation Master", input_dir=input_dir))
+        parse_rep_directory(mets_doc, access_derivative_dir, 'DERIVATIVE_COPY', ie_id + "-rep2", digital_original)
+        flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=access_derivative_dir, rep_id=ie_id + "-rep2", pres_type="Derivative Copy", input_dir=input_dir))
+
+    elif pres_master_dir != None and modified_master_dir != None:
+        parse_rep_directory(mets_doc, pres_master_dir, 'PRESERVATION_MASTER', ie_id + "-rep1", digital_original)
+        # mets.root.append(pres_master_dir, 'PRESERVATION_MASTER', "1")
+        flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=pres_master_dir, rep_id=ie_id + "-rep1", pres_type="Preservation Master", input_dir=input_dir))
+        parse_rep_directory(mets_doc, modified_master_dir, 'MODIFIED_MASTER', ie_id + "-rep2", digital_original)
+        # mets.root.append(modified_master_dir, 'MODIFIED_MASTER', "2")
+        flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=modified_master_dir, rep_id=ie_id + "-rep2", pres_type="Modified Master", input_dir=input_dir))
+
+    elif pres_master_dir != None:
+        parse_rep_directory(mets_doc, pres_master_dir, 'PRESERVATION_MASTER', ie_id + "-rep1", digital_original)
+        flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=pres_master_dir, rep_id=ie_id + "-rep1", pres_type="Preservation Master", input_dir=input_dir))
+
+    if len(flgrp_dict) > 0:
+        mets_doc.append(build_fileSec(flgrp_dict=flgrp_dict))
+
+    # reposition the structmap so it is at the final point of the 
+    structmap_list = mets_doc.xpath("/mets:mets/mets:structMap", namespaces={'mets': 'http://www.loc.gov/METS/'})
+    for structmap in structmap_list:
+        mets_doc.append(structmap)
+        
+    return mets_doc
+
+
 def build_metsHdr():
     pass
 
@@ -24,6 +72,7 @@ def build_generic_sec(sec, attrs, mdRef_list, mdWrap_list):
             generic_sec.append(mdWrap_list_element)
     return generic_sec
 
+# dmdSec
 
 def build_dmdSec(dmdSec_attrs, mdRef_list, mdWrap_list):
     return build_generic_sec(mets.DmdSec, dmdSec_attrs, mdRef_list, 
@@ -47,6 +96,8 @@ def build_mdWrap(mdWrap_attrs, binData_list=None, xmlData_list=None):
 def build_mdRef(mdRef_attrs):
     return mets.MdRef(mdRef_attrs)
 
+
+# amdSec
 
 def build_amdSec(amdSec_attrs, techMD_list=None, rightsMD_list=None,
     sourceMD_list=None, digiprovMD_list=None):
@@ -77,6 +128,29 @@ def build_sourceMD(digiprovMD_attrs, mdRef_list, mdWrap_list):
     return build_generic_sec(mets.DigiprovMd, digiprovMD_attrs, mdRef_list, 
         mdWrap_list)
 
+# Helpers for amdsecs for reps and files
+
+def parse_rep_directory(mets_record, rep_directory_path, pres_type, idNo, digital_original=False):
+    if rep_directory_path and len(os.listdir(rep_directory_path)) > 0:
+        rep_amd = mets.AmdSec(ID=idNo)
+        rep_amd.append(mets.TechMd(ID=idNo))
+        rep_amd.append(mets.RightsMd(ID=idNo))
+        rep_amd.append(mets.SourceMd(ID=idNo))
+        rep_amd.append(mets.DigiprovMd(ID=idNo))
+        mets_record.append(rep_amd)
+        flNo = 0
+        file_list = ordered_file_list(rep_directory_path)
+        for item in file_list:
+            flNo += 1
+            filepath = item
+            amd_id = "{}-file{}".format(idNo, flNo)
+            fl_amd = mets.AmdSec(ID=amd_id)
+            fl_amd.append(mets.TechMd(ID=amd_id + "-techMd"))
+            fl_amd.append(mets.RightsMd(ID=amd_id + "-rightsMd"))
+            fl_amd.append(mets.SourceMd(ID=amd_id + "-sourceMd"))
+            fl_amd.append(mets.DigiprovMd(ID=amd_id + "-digiprovMd"))
+            mets_record.append(fl_amd)
+
 # Helpers for constructing structmap and filesec
 
 def os_path_split_asunder(path, debug=False):
@@ -97,7 +171,8 @@ def os_path_split_asunder(path, debug=False):
     return parts
 
 
-def generate_flgrp_details(mets, rep_directory_path, rep_id, pres_type, input_dir):
+def generate_flgrp_details_and_structmap(mets, rep_directory_path, rep_id,
+                                         pres_type, input_dir):
     """Generates the fileGrp details for a representation in the form of
     a list containing a dictionary for each file in the rep.
     At the same time, a structMap is also generated for the rep and
@@ -124,8 +199,7 @@ def generate_flgrp_details(mets, rep_directory_path, rep_id, pres_type, input_di
                 # 09/09/2015: Hack to remove the leading slash
         if filepath[0] == "/" or filepath[0] == "\\":
             filepath = filepath[1:]
-        # file_details = {'fid' + str(fileNo) :
-        file_details = {"{}-{}".format( rep_id, str(fileNo) ) :
+        file_details = {"{}-file{}".format( rep_id, str(fileNo) ) :
                             {
                             # 'MIMETYPE': mime_type,
                             'href': filepath} }
@@ -134,14 +208,12 @@ def generate_flgrp_details(mets, rep_directory_path, rep_id, pres_type, input_di
         # time to build the fileDict for the StructMap!
 
         item = item[item.find(rep_directory_path)+ len(rep_directory_path): ]
-
         file_path_dict = os_path_split_asunder(item)
         # grab the filename from file_path_dict
         file_name = file_path_dict.pop()
         # reverse the file_path_dict, so we can easily 
         # pop off the dirs in order
         file_path_dict = file_path_dict[::-1]
-
         populate_file_dict(file_path_dict, 
                            file_name, 
                            # "fid%s-%s" % (str(fileNo), idNo),
@@ -236,3 +308,27 @@ def build_structMap(structMap_attrs, presType, fileDict):
      #              }
 
     return structMap
+
+
+def build_fileSec(flgrp_dict):
+    file_sec = mets.FileSec()
+    for rep in flgrp_dict:
+        for item in rep:
+            id_val = item
+            rep_no = id_val[3:]
+            rep_admid = id_val + "-amd"
+            flgrp_attrs = {'USE': rep[item][0]['USE'],
+                           'ID': id_val,
+                           'ADMID': rep_admid}
+            flgrp = mets.FileGrp(**flgrp_attrs)
+            file_sec.append(flgrp)
+            for file_item in rep[item][1]:
+                for fi in file_item:
+                    file_id = fi
+                    file_admid = "{}-amd".format(file_id)
+                    file_element = mets.File(ID=file_id, ADMID=file_admid)
+                    flgrp.append(file_element)
+                    flocat = mets.FLocat(href=file_item[fi]['href'],
+                                         LOCTYPE='URL')
+                    file_element.append(flocat)
+    return file_sec
