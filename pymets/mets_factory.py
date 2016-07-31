@@ -1,11 +1,11 @@
-import mets
+import mets_model
 
 import os
 
 from collections import OrderedDict
 
 def build_mets():
-    return mets.Mets()
+    return mets_model.Mets()
 
 def build_mets_components(mets_doc,
                           ie_dmd=None,
@@ -34,10 +34,10 @@ def build_mets_components(mets_doc,
 
     elif pres_master_dir != None and modified_master_dir != None:
         parse_rep_directory(mets_doc, pres_master_dir, 'PRESERVATION_MASTER', ie_id + "-rep1", digital_original)
-        # mets.root.append(pres_master_dir, 'PRESERVATION_MASTER', "1")
+        # mets_model.root.append(pres_master_dir, 'PRESERVATION_MASTER', "1")
         flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=pres_master_dir, rep_id=ie_id + "-rep1", pres_type="Preservation Master", input_dir=input_dir))
         parse_rep_directory(mets_doc, modified_master_dir, 'MODIFIED_MASTER', ie_id + "-rep2", digital_original)
-        # mets.root.append(modified_master_dir, 'MODIFIED_MASTER', "2")
+        # mets_model.root.append(modified_master_dir, 'MODIFIED_MASTER', "2")
         flgrp_dict.append(generate_flgrp_details_and_structmap(mets=mets_doc, rep_directory_path=modified_master_dir, rep_id=ie_id + "-rep2", pres_type="Modified Master", input_dir=input_dir))
 
     elif pres_master_dir != None:
@@ -75,33 +75,33 @@ def build_generic_sec(sec, attrs, mdRef_list, mdWrap_list):
 # dmdSec
 
 def build_dmdSec(dmdSec_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets.DmdSec, dmdSec_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.DmdSec, dmdSec_attrs, mdRef_list, 
         mdWrap_list)
 
 
 def build_mdWrap(mdWrap_attrs, binData_list=None, xmlData_list=None):
-    md_wrap = mets.MdWrap(**mdWrap_attrs)
+    md_wrap = mets_model.MdWrap(**mdWrap_attrs)
     if binData_list:
         for binData_list_element in binData_list:
-            bd = mets.BinData()
+            bd = mets_model.BinData()
             bd.text = binData_list_element
             md_wrap.append(bd)
     if xmlData_list:
         for xmlData_list_element in xmlData_list:
-            xd = mets.XmlData()
+            xd = mets_model.XmlData()
             xd.append(xmlData_list_element)
     return md_wrap
 
 
 def build_mdRef(mdRef_attrs):
-    return mets.MdRef(mdRef_attrs)
+    return mets_model.MdRef(mdRef_attrs)
 
 
 # amdSec
 
 def build_amdSec(amdSec_attrs, techMD_list=None, rightsMD_list=None,
     sourceMD_list=None, digiprovMD_list=None):
-    amd_sec = mets.AmdSec(**amdSec_attrs)
+    amd_sec = mets_model.AmdSec(**amdSec_attrs)
     for md_list in (techMD_list, rightsMD_list, sourceMD_list, digiprovMD_list):
         if md_list:
             for md_list_element in md_list:
@@ -110,33 +110,33 @@ def build_amdSec(amdSec_attrs, techMD_list=None, rightsMD_list=None,
 
 
 def build_techMD(techMD_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets.TechMd, techMD_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.TechMd, techMD_attrs, mdRef_list, 
         mdWrap_list)
 
 
 def build_rightsMD(rightsMD_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets.TechMd, rightsMD_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.TechMd, rightsMD_attrs, mdRef_list, 
         mdWrap_list)
 
 
 def build_sourceMD(sourceMD_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets.SourceMd, sourceMD_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.SourceMd, sourceMD_attrs, mdRef_list, 
         mdWrap_list)
 
 
 def build_sourceMD(digiprovMD_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets.DigiprovMd, digiprovMD_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.DigiprovMd, digiprovMD_attrs, mdRef_list, 
         mdWrap_list)
 
 # Helpers for amdsecs for reps and files
 
 def parse_rep_directory(mets_record, rep_directory_path, pres_type, idNo, digital_original=False):
     if rep_directory_path and len(os.listdir(rep_directory_path)) > 0:
-        rep_amd = mets.AmdSec(ID=idNo)
-        rep_amd.append(mets.TechMd(ID=idNo))
-        rep_amd.append(mets.RightsMd(ID=idNo))
-        rep_amd.append(mets.SourceMd(ID=idNo))
-        rep_amd.append(mets.DigiprovMd(ID=idNo))
+        rep_amd = mets_model.AmdSec(ID=idNo)
+        rep_amd.append(mets_model.TechMd(ID=idNo))
+        rep_amd.append(mets_model.RightsMd(ID=idNo))
+        rep_amd.append(mets_model.SourceMd(ID=idNo))
+        rep_amd.append(mets_model.DigiprovMd(ID=idNo))
         mets_record.append(rep_amd)
         flNo = 0
         file_list = ordered_file_list(rep_directory_path)
@@ -144,11 +144,11 @@ def parse_rep_directory(mets_record, rep_directory_path, pres_type, idNo, digita
             flNo += 1
             filepath = item
             amd_id = "{}-file{}".format(idNo, flNo)
-            fl_amd = mets.AmdSec(ID=amd_id)
-            fl_amd.append(mets.TechMd(ID=amd_id + "-techMd"))
-            fl_amd.append(mets.RightsMd(ID=amd_id + "-rightsMd"))
-            fl_amd.append(mets.SourceMd(ID=amd_id + "-sourceMd"))
-            fl_amd.append(mets.DigiprovMd(ID=amd_id + "-digiprovMd"))
+            fl_amd = mets_model.AmdSec(ID=amd_id)
+            fl_amd.append(mets_model.TechMd(ID=amd_id + "-techMd"))
+            fl_amd.append(mets_model.RightsMd(ID=amd_id + "-rightsMd"))
+            fl_amd.append(mets_model.SourceMd(ID=amd_id + "-sourceMd"))
+            fl_amd.append(mets_model.DigiprovMd(ID=amd_id + "-digiprovMd"))
             mets_record.append(fl_amd)
 
 # Helpers for constructing structmap and filesec
@@ -176,7 +176,7 @@ def generate_flgrp_details_and_structmap(mets, rep_directory_path, rep_id,
     """Generates the fileGrp details for a representation in the form of
     a list containing a dictionary for each file in the rep.
     At the same time, a structMap is also generated for the rep and
-    appended to the METS."""
+    appended to the mets_model."""
     # start off with structMap details
     repType = 'PHYSICAL'
     presType = pres_type
@@ -262,12 +262,12 @@ def ordered_file_list(rep_directory_path):
 def recurse_over_filedict(root_element, input_dict):
     for key in input_dict.keys():
         if type(input_dict[key]) is str:
-            fileDiv = mets.Div(LABEL=key, TYPE="FILE")
+            fileDiv = mets_model.Div(LABEL=key, TYPE="FILE")
             root_element.append(fileDiv)
-            fptr = mets.Fptr(FILEID=input_dict[key])
+            fptr = mets_model.Fptr(FILEID=input_dict[key])
             fileDiv.append(fptr)
         elif type(input_dict[key]) is OrderedDict:
-            folderDiv = mets.Div(LABEL=key)
+            folderDiv = mets_model.Div(LABEL=key)
             root_element.append(folderDiv)
             recurse_over_filedict(folderDiv, input_dict[key])
 
@@ -284,7 +284,7 @@ def populate_file_dict(file_path_list, file_name, file_id, init_dict):
 
 
 def build_structMap(structMap_attrs, presType, fileDict):
-    structMap = mets.StructMap(**structMap_attrs)
+    structMap = mets_model.StructMap(**structMap_attrs)
     recurse_over_filedict(structMap, fileDict)
      # repId (str): representation ID, e.g. '1', '2', etc.
      #        repType (str): e.g. 'PHYSICAL', 'DIGITAL', etc.
@@ -311,7 +311,7 @@ def build_structMap(structMap_attrs, presType, fileDict):
 
 
 def build_fileSec(flgrp_dict):
-    file_sec = mets.FileSec()
+    file_sec = mets_model.FileSec()
     for rep in flgrp_dict:
         for item in rep:
             id_val = item
@@ -320,15 +320,15 @@ def build_fileSec(flgrp_dict):
             flgrp_attrs = {'USE': rep[item][0]['USE'],
                            'ID': id_val,
                            'ADMID': rep_admid}
-            flgrp = mets.FileGrp(**flgrp_attrs)
+            flgrp = mets_model.FileGrp(**flgrp_attrs)
             file_sec.append(flgrp)
             for file_item in rep[item][1]:
                 for fi in file_item:
                     file_id = fi
                     file_admid = "{}-amd".format(file_id)
-                    file_element = mets.File(ID=file_id, ADMID=file_admid)
+                    file_element = mets_model.File(ID=file_id, ADMID=file_admid)
                     flgrp.append(file_element)
-                    flocat = mets.FLocat(href=file_item[fi]['href'],
+                    flocat = mets_model.FLocat(href=file_item[fi]['href'],
                                          LOCTYPE='URL')
                     file_element.append(flocat)
     return file_sec

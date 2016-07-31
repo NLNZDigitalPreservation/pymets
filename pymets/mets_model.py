@@ -18,7 +18,7 @@ ET.register_namespace('mets', METS_NS)
 
 ET.register_namespace('xlin', XLIN_NS)
 
-STRICT = True
+strict = True
 
 
 def initialise_values(element, attribs_list):
@@ -31,7 +31,7 @@ def initialise_values(element, attribs_list):
         elif key not in attribs_list:
             print("WARN: {} not allowed in element {}".format(
                 key, element.TAG))
-            if STRICT:
+            if strict:
                 del element.attrib[key]
 
 
@@ -98,11 +98,11 @@ class DmdSec(ET.ElementBase):
         initialise_values(self, ['ID'])
 
     @property
-    def id(self):
+    def ID(self):
         return self.attrib['ID']
 
-    @id.setter
-    def id(self, value):
+    @ID.setter
+    def ID(self, value):
         self.attrib['ID'] = value
     
 
@@ -501,7 +501,7 @@ class MdExt(ET.ElementBase):
     intended to be called directly.'''
 
     def _init(self, element_name=None):
-        self.TAG = '{http://www.loc.gov/METS/}' + element_name
+        self.tag = '{http://www.loc.gov/METS/}' + element_name
         initialise_values(self, ['ID', 'ADMID', 'CREATED', 'STATUS'])
 
     @property

@@ -46,17 +46,17 @@ amdSec.append(techMd)
 filegrp_dict = []
 
 flgrp1 = mf.generate_flgrp_details_and_structmap(mets=mets, 
-	rep_directory_path=os.path.join('tests', 'test_batch', 'pm'), 
+	rep_directory_path=os.path.join('tests', 'data', 'test_batch_1', 'pm'), 
 	rep_id='ie1-rep1', 
 	pres_type='PRESERVATION_MASTER', 
-	input_dir=os.path.join('tests', 'test_batch'))
+	input_dir=os.path.join('tests', 'data', 'test_batch'))
 filegrp_dict.append(flgrp1)
 
 flgrp2 = mf.generate_flgrp_details_and_structmap(mets=mets, 
-	rep_directory_path=os.path.join('tests', 'test_batch', 'mm'), 
+	rep_directory_path=os.path.join('tests', 'data', 'test_batch_1', 'mm'), 
 	rep_id='ie1-rep2', 
 	pres_type='MODIFIED_MASTER', 
-	input_dir=os.path.join('tests', 'test_batch'))
+	input_dir=os.path.join('tests', 'data', 'test_batch_1'))
 filegrp_dict.append(flgrp2)
 
 # print(filegrp_dict)

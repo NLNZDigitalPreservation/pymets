@@ -51,10 +51,10 @@ mets_doc.append(dmd_sec)
 mf.build_mets_components(mets_doc,
 						 ie_id='ie1',
 						 ie_dmd=[dublin_core],
-						 pres_master_dir=os.path.join('tests', 'test_batch', 'pm'),
-						 modified_master_dir=os.path.join('tests', 'test_batch', 'mm'),
+						 pres_master_dir=os.path.join('tests', 'data', 'test_batch_1', 'pm'),
+						 modified_master_dir=os.path.join('tests', 'data', 'test_batch_1','mm'),
 						 access_derivative_dir=None,
-						 input_dir=os.path.join('tests', 'test_batch'))
+						 input_dir=os.path.join('tests', 'data', 'test_batch_1'))
 
 
 print(ET.tostring(mets_doc, pretty_print=True))
