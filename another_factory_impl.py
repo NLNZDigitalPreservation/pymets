@@ -48,7 +48,7 @@ mets_doc = mf.build_mets()
 mets_doc.append(dmd_sec)
 # mets_doc.append(dublin_core)
 
-mf.build_mets_components(mets_doc,
+mf.build_amdsec_filegrp_structmap(mets_doc,
 						 ie_id='ie1',
 						 ie_dmd=[dublin_core],
 						 pres_master_dir=os.path.join('tests', 'data', 'test_batch_1', 'pm'),

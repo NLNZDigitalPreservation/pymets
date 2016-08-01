@@ -7,7 +7,7 @@ from collections import OrderedDict
 def build_mets():
     return mets_model.Mets()
 
-def build_mets_components(mets_doc,
+def build_amdsec_filegrp_structmap(mets_doc,
                           ie_dmd=None,
                           ie_id=None,
                           pres_master_dir=None,
@@ -133,10 +133,10 @@ def build_sourceMD(digiprovMD_attrs, mdRef_list, mdWrap_list):
 def parse_rep_directory(mets_record, rep_directory_path, pres_type, idNo, digital_original=False):
     if rep_directory_path and len(os.listdir(rep_directory_path)) > 0:
         rep_amd = mets_model.AmdSec(ID=idNo)
-        rep_amd.append(mets_model.TechMd(ID=idNo))
-        rep_amd.append(mets_model.RightsMd(ID=idNo))
-        rep_amd.append(mets_model.SourceMd(ID=idNo))
-        rep_amd.append(mets_model.DigiprovMd(ID=idNo))
+        # rep_amd.append(mets_model.TechMd(ID=idNo))
+        # rep_amd.append(mets_model.RightsMd(ID=idNo))
+        # rep_amd.append(mets_model.SourceMd(ID=idNo))
+        # rep_amd.append(mets_model.DigiprovMd(ID=idNo))
         mets_record.append(rep_amd)
         flNo = 0
         file_list = ordered_file_list(rep_directory_path)
@@ -145,10 +145,10 @@ def parse_rep_directory(mets_record, rep_directory_path, pres_type, idNo, digita
             filepath = item
             amd_id = "{}-file{}".format(idNo, flNo)
             fl_amd = mets_model.AmdSec(ID=amd_id)
-            fl_amd.append(mets_model.TechMd(ID=amd_id + "-techMd"))
-            fl_amd.append(mets_model.RightsMd(ID=amd_id + "-rightsMd"))
-            fl_amd.append(mets_model.SourceMd(ID=amd_id + "-sourceMd"))
-            fl_amd.append(mets_model.DigiprovMd(ID=amd_id + "-digiprovMd"))
+            # fl_amd.append(mets_model.TechMd(ID=amd_id + "-techMd"))
+            # fl_amd.append(mets_model.RightsMd(ID=amd_id + "-rightsMd"))
+            # fl_amd.append(mets_model.SourceMd(ID=amd_id + "-sourceMd"))
+            # fl_amd.append(mets_model.DigiprovMd(ID=amd_id + "-digiprovMd"))
             mets_record.append(fl_amd)
 
 # Helpers for constructing structmap and filesec

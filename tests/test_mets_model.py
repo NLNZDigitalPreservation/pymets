@@ -46,3 +46,32 @@ def test_dmdsec_add_id_param_after_init():
 	dmd_el = mm.DmdSec()
 	dmd_el.ID = 'ie1'
 	assert(dmd_el.attrib['ID'] == 'ie1')
+
+
+def test_metshdr_tag():
+	metshdr = mm.MetsHdr()
+	assert(metshdr.tag == '{http://www.loc.gov/METS/}metsHdr')
+
+def test_metshdr_tag():
+	metshdr = mm.MetsHdr()
+	assert(metshdr.tag == '{http://www.loc.gov/METS/}metsHdr')
+
+
+def test_metshdr_attrs():
+	metshdr = mm.MetsHdr(ID='ie1', ADMID='ie1-amd', CREATEDATE='2016-06-01',
+		LASTMODDATE='2016-06-03', IS_HORSEY='false')
+	# assert(metshdr.tag == '{http://www.loc.gov/METS/}metsHdr')
+	metshdr.RECORDSTATUS = 'ACTIVE'
+	print("attrib length is {}".format(len(metshdr.attrib)))
+	assert(len(metshdr.attrib)) == 5
+
+def test_amdsec_tag():
+	amdsec = mm.AmdSec()
+	assert(amdsec.tag == '{http://www.loc.gov/METS/}amdSec')
+
+def test_amdsec_attrs():
+	amdsec = mm.AmdSec(ID="ie1")
+	assert(amdsec.attrib['ID'] == "ie1")
+	print("Now updating the ID attrib!")
+	amdsec.ID = 'rep1'
+	assert(amdsec.attrib['ID'] == "rep1")

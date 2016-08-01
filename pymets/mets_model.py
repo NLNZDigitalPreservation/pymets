@@ -50,43 +50,43 @@ class MetsHdr(ET.ElementBase):
             'RECORDSTATUS'])
 
     @property
-    def id(self):
+    def ID(self):
         return self.attrib['ID']
     
-    @id.setter
-    def id(self, value):
+    @ID.setter
+    def ID(self, value):
         self.attib['ID'] = value
     
     @property
-    def admid(self):
+    def ADMID(self):
         return self.attrib['ADMID']
 
-    @admid.setter
-    def admid(self, value):
+    @ADMID.setter
+    def ADMID(self, value):
         self.attrib['ADMID'] = value
 
     @property
-    def createdate(self):
+    def CREATEDATE(self):
         return self.attrib['CREATEDATE']
     
-    @createdate.setter
-    def createdate(self, value):
+    @CREATEDATE.setter
+    def CREATEDATE(self, value):
         self.attrib['CREATEDATE'] = value
 
     @property
-    def lastmoddate(self):
+    def LASTMODDATE(self):
         return self.attrib['LASTMODDATE']
     
-    @lastmoddate.setter
-    def lastmoddate(self, value):
+    @LASTMODDATE.setter
+    def LASTMODDATE(self, value):
         self.attrib['LASTMODDATE'] = value
 
     @property
-    def recordstatus(self):
+    def RECORDSTATUS(self):
         return self.attrib['RECORDSTATUS']
     
-    @recordstatus.setter
-    def recordstatus(self, value):
+    @RECORDSTATUS.setter
+    def RECORDSTATUS(self, value):
         self.attrib['RECORDSTATUS'] = value    
 
 
@@ -685,7 +685,7 @@ class File(ET.ElementBase):
 
 
 class FLocat(ET.ElementBase):
-    TAG = '{http://www.loc.gov/METS/}FLocat'
+    TAG = '{http://www.loc.gov/METS/}fLocat'
 
     def _init(self):
         initialise_values(self, ['ID', 'USE', 'LOCTYPE', 'OTHERLOCTYPE', 'href'])
