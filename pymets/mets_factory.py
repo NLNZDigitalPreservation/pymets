@@ -1,4 +1,4 @@
-import mets_model
+from pymets import mets_model
 
 import os
 
@@ -245,7 +245,7 @@ def ordered_file_list(rep_directory_path):
         for item in files:
             try:
                 # coercing to unicode to better handle utf8 characters
-                item = unicode(item, "utf-8") 
+                # item = unicode(item, "utf-8") 
                 item_test = item[:item.rfind(".")]
                 int(item_test)  # If we don't get a value error, it's an int!
                 int_file_names.append(item)
