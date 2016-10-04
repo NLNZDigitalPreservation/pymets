@@ -18,7 +18,6 @@ def test_basic():
 def test_build_amdsec_filegrp_structmap():
     mets = mf.build_mets()
     mf.build_amdsec_filegrp_structmap(mets,
-        ie_dmd=None,
         ie_id='ie1',
         pres_master_dir=os.path.join(os.path.dirname(os.path.realpath(__file__)),'data', 'test_batch_1', 'pm'),
         modified_master_dir=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data', 'test_batch_1', 'mm'),

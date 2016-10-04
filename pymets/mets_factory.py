@@ -8,7 +8,6 @@ def build_mets():
     return mets_model.Mets()
 
 def build_amdsec_filegrp_structmap(mets_doc,
-                          ie_dmd=None,
                           ie_id=None,
                           pres_master_dir=None,
                           modified_master_dir=None,
@@ -132,7 +131,7 @@ def build_sourceMD(digiprovMD_attrs, mdRef_list, mdWrap_list):
 
 def parse_rep_directory(mets_record, rep_directory_path, pres_type, idNo, digital_original=False):
     if rep_directory_path and len(os.listdir(rep_directory_path)) > 0:
-        rep_amd = mets_model.AmdSec(ID=idNo)
+        rep_amd = mets_model.AmdSec(ID=idNo + '-amd')
         # rep_amd.append(mets_model.TechMd(ID=idNo))
         # rep_amd.append(mets_model.RightsMd(ID=idNo))
         # rep_amd.append(mets_model.SourceMd(ID=idNo))
@@ -144,7 +143,7 @@ def parse_rep_directory(mets_record, rep_directory_path, pres_type, idNo, digita
             flNo += 1
             filepath = item
             amd_id = "{}-file{}".format(idNo, flNo)
-            fl_amd = mets_model.AmdSec(ID=amd_id)
+            fl_amd = mets_model.AmdSec(ID=amd_id + '-amd')
             # fl_amd.append(mets_model.TechMd(ID=amd_id + "-techMd"))
             # fl_amd.append(mets_model.RightsMd(ID=amd_id + "-rightsMd"))
             # fl_amd.append(mets_model.SourceMd(ID=amd_id + "-sourceMd"))
@@ -259,7 +258,11 @@ def ordered_file_list(rep_directory_path):
     return output_file_list
 
 
-def recurse_over_filedict(root_element, input_dict):
+def recurse_over_filedict(root_element, input_dict, pres_type=None):
+    if pres_type != None:
+        div = mets_model.Div(LABEL=pres_type)
+        root_element.append(div)
+        root_element = div
     for key in input_dict.keys():
         if type(input_dict[key]) is str:
             fileDiv = mets_model.Div(LABEL=key, TYPE="FILE")
@@ -285,7 +288,7 @@ def populate_file_dict(file_path_list, file_name, file_id, init_dict):
 
 def build_structMap(structMap_attrs, presType, fileDict):
     structMap = mets_model.StructMap(**structMap_attrs)
-    recurse_over_filedict(structMap, fileDict)
+    recurse_over_filedict(structMap, fileDict, presType)
      # repId (str): representation ID, e.g. '1', '2', etc.
      #        repType (str): e.g. 'PHYSICAL', 'DIGITAL', etc.
      #        presType (str): e.g. 'PRESERVATION MASTER', 'MODIFIED MASTER', etc.
