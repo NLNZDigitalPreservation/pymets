@@ -4,7 +4,7 @@ except ImportError:
     from distutils.core import setup
 
 config = {
-	'name':'PyMets',
+	'name':'pymets',
 	'version':'0.1.0',
 	'author':'Sean Mosely',
 	'author_email':'sean.mosely@gmail.com',
