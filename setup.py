@@ -10,6 +10,6 @@ config = {
 	'author_email':'sean.mosely@gmail.com',
 	'packages':['pymets','pymets.tests'],
 	'description':'Python library for building METS XML documents',
-	'install_requires':['lxml', 'nose']}
+	'install_requires':['lxml',]}
 
 setup(**config)
