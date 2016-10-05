@@ -1,5 +1,6 @@
 from lxml import etree as ET
-# import xml.etree.ElementTree as ET # This does not work, as we use components that are only available in lxml
+# xml.etree.ElementTree as ET does not work, 
+# as we use components that are only available in lxml
 
 __version__ = '0.1'
 
@@ -189,22 +190,27 @@ class Agent(ET.ElementBase):
 
 
 class Name(ET.ElementBase):
-    '''A subelement of Agent. No attributes can be given - only a text value for the element.'''
+    '''A subelement of Agent. No attributes can be given - only a text value 
+    for the element.
+    '''
     
     TAG = '{http://www.loc.gov/METS/}name'
 
 
 class Note(ET.ElementBase):
-    '''A subelement of Agent. No attributes can be given - only a text value for the element.'''
+    '''A subelement of Agent. No attributes can be given - only a text value
+    for the element.
+    '''
 
     TAG = '{http://www.loc.gov/METS/}note'
 
 
 class AltRecordID(ET.ElementBase):
-    '''A subelement of metsHdr. Allows one to use alternative record identifier
-    values for the digital object represented by the METS document; the primary
-    record identifier is stored in the OBJID attribute in the root <mets>
-    document.'''
+    '''A subelement of metsHdr. Allows one to use alternative record 
+    identifier values for the digital object represented by the METS document;
+    the primary record identifier is stored in the OBJID attribute in the root
+    <mets> document.
+    '''
 
     TAG = '{http://www.loc.gov/METS/}altRecordID'
 
@@ -380,8 +386,9 @@ class MdRef(ET.ElementBase):
 
 
 class MdWrap(ET.ElementBase):
-    '''A subelement of dmdSec, techMD, rightsMD, sourceMD and digiProvMd. It is
-    used to wrap metadata from other schemas, such as PREMIS.'''
+    '''A subelement of dmdSec, techMD, rightsMD, sourceMD and digiProvMd. It
+    is used to wrap metadata from other schemas, such as PREMIS.
+    '''
     TAG = '{http://www.loc.gov/METS/}mdWrap'
 
     def _init(self):
@@ -481,14 +488,16 @@ class XmlData(ET.ElementBase):
     validate the elements for which it can find declarations. If a source schema
     is not identified, or cannot be found at the specified schemaLocation, then
     an XML validator will check for well-formedness, but otherwise skip over
-    the elements appearing in the <xmlData> element.'''
+    the elements appearing in the <xmlData> element.
+    '''
 
     TAG = '{http://www.loc.gov/METS/}xmlData'
 
 
 class BinData(ET.ElementBase):
     '''The binary data wrapper element <binData> is used to contain Base64
-    encoded metadata.'''
+    encoded metadata.
+    '''
 
     TAG = '{http://www.loc.gov/METS/}binData'
 
@@ -498,7 +507,8 @@ class BinData(ET.ElementBase):
 
 class MdExt(ET.ElementBase):
     '''Generic parent class of techMd, rightsMD, sourceMD and digiprovMd. Not
-    intended to be called directly.'''
+    intended to be called directly.
+    '''
 
     def _init(self, element_name=None):
         self.tag = '{http://www.loc.gov/METS/}' + element_name
@@ -560,7 +570,8 @@ class DigiprovMd(MdExt):
 class FileSec(ET.ElementBase):
     '''The overall purpose of the content file section element <fileSec> is to
     provide an inventory of and the location for the content files that
-    comprise the digital object being described in the METS document. '''
+    comprise the digital object being described in the METS document.
+    '''
     TAG = '{http://www.loc.gov/METS/}fileSec'
 
 
