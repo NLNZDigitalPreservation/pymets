@@ -1,7 +1,6 @@
 The MIT License (MIT)
-=====================
 
-Copyright © 2015 Sean Mosely
+Copyright © 2016 Sean Mosely
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
