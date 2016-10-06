@@ -13,6 +13,8 @@ config = {
 	'packages':['pymets'],
 	'description':'Python library for building METS XML documents',
 	'install_requires':['lxml==3.6.4',],
-	'download_url': 'https://github.com/NLNZDigitalPreservation/pymets/archive/v'+VERSION+'.tar.gz',}
+	'download_url': 'https://github.com/NLNZDigitalPreservation/pymets/archive/v'+VERSION+'.tar.gz',
+	'license': 'MIT',
+	}
 
 setup(**config)
