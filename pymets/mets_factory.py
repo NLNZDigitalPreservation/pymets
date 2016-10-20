@@ -298,7 +298,7 @@ def generate_flgrp_details_and_structmap(mets, rep_directory_path, rep_id,
                            fileDict)
 
         # Now, back to the structMap!
-    structMap_attrs = {'ID': rep_id, 'TYPE': repType}
+    structMap_attrs = {'ID': rep_id + "-1", 'TYPE': repType}
     mets.append(build_structMap(structMap_attrs=structMap_attrs, 
                                 presType=presType,
                                 fileDict=fileDict))
