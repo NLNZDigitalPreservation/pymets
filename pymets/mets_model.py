@@ -696,7 +696,7 @@ class File(ET.ElementBase):
 
 
 class FLocat(ET.ElementBase):
-    TAG = '{http://www.loc.gov/METS/}fLocat'
+    TAG = '{http://www.loc.gov/METS/}FLocat'
 
     def _init(self):
         initialise_values(self, ['ID', 'USE', 'LOCTYPE', 'OTHERLOCTYPE', 'href'])

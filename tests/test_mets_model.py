@@ -77,3 +77,7 @@ def test_amdsec_attrs():
 	print("Now updating the ID attrib!")
 	amdsec.ID = 'rep1'
 	assert(amdsec.attrib['ID'] == "rep1")
+
+def test_FLocat_tag():
+	flocat = mm.FLocat()
+	assert(flocat.tag == '{http://www.loc.gov/METS/}FLocat')
