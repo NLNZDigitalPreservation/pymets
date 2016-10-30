@@ -39,6 +39,12 @@ def initialise_values(element, attribs_list):
 class Mets(ET.ElementBase):
     TAG = '{http://www.loc.gov/METS/}mets'
 
+    def tounicode(self, pretty_print=False):
+        return ET.tounicode(self, pretty_print=pretty_print)
+
+    def write(self, filename, pretty_print=False):
+        with open(filename, 'w') as f:
+            f.write(ET.tounicode(self, pretty_print=pretty_print))
 # Generic parent classes
 
 
