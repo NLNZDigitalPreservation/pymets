@@ -26,7 +26,7 @@ def initialise_values(element, attribs_list):
     for key in element.attrib:
         if key in attribs_list:
             if key in ['href', 'arcrole', 'title', 'show', 'acutate', 'to',
-                'FROM']:
+                       'FROM']:
                 element.set("{%s}%s" % (XLIN_NS, key), element.attrib[key])
                 del element.attrib[key]
         elif key not in attribs_list:
@@ -42,9 +42,19 @@ class Mets(ET.ElementBase):
     def tounicode(self, pretty_print=False):
         return ET.tounicode(self, pretty_print=pretty_print)
 
-    def write(self, filename, pretty_print=False):
-        with open(filename, 'w') as f:
-            f.write(ET.tounicode(self, pretty_print=pretty_print))
+    def tostring(self, pretty_print=False, encoding="unicode"):
+        return ET.tostring(self, pretty_print=pretty_print, encoding=encoding)
+
+    def write(self, filename, pretty_print=False, encoding="unicode"):
+        if encoding in ["unicode"]:
+            with open(filename, 'w') as f:
+                f.write(ET.tostring(self, pretty_print=pretty_print,
+                        encoding=encoding))
+        else:
+            with open(filename, 'wb') as f:
+                f.write(ET.tostring(self, pretty_print=pretty_print,
+                        encoding=encoding))
+
 # Generic parent classes
 
 

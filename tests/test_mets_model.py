@@ -1,5 +1,7 @@
 import os
 
+import sys
+
 from nose.tools import *
 from lxml import etree as ET
 
@@ -108,3 +110,45 @@ def test_mets_tounicode():
     dmd_el = mm.DmdSec(ID='ie1')
     mets.append(dmd_el)
     assert(mets.tounicode().startswith('<mets:mets'))
+
+def test_mets_write_with_utf8():
+    """Ensure that Mets.write() is able to be written to a file with utf8"""
+    mets = mm.Mets()
+    # Fill with some stuff
+    dmd_el = mm.DmdSec(ID='ie1')
+    mets.append(dmd_el)
+    output_files = os.listdir(os.path.join(CURRENT_DIR, 'data', 'output'))
+    if len(output_files) != 0:
+        for item in output_files:
+            os.remove(os.path.join(CURRENT_DIR, 'data', 'output', item))
+    mets.write(os.path.join(CURRENT_DIR, 'data', 'output', 'mets.xml'),
+        encoding='UTF-8')
+
+def test_mets_write_with_cp_1252():
+    """Ensure that Mets.write() is able to be written to a file with cp1252"""
+    mets = mm.Mets()
+    # Fill with some stuff
+    dmd_el = mm.DmdSec(ID='ie1')
+    mets.append(dmd_el)
+    output_files = os.listdir(os.path.join(CURRENT_DIR, 'data', 'output'))
+    if len(output_files) != 0:
+        for item in output_files:
+            os.remove(os.path.join(CURRENT_DIR, 'data', 'output', item))
+    mets.write(os.path.join(CURRENT_DIR, 'data', 'output', 'mets.xml'),
+        encoding='cp1252')
+
+def test_mets_write_with_utf8_with_macron():
+    """check Mets.write() with utf8 with macron in document"""
+    print("trying to do the macron thing!")
+    print(sys.version)
+    mets = mm.Mets()
+    # Fill with some stuff
+    dmd_el = mm.DmdSec(ID='ie1')
+    dmd_el.text = 'māori'
+    mets.append(dmd_el)
+    output_files = os.listdir(os.path.join(CURRENT_DIR, 'data', 'output'))
+    if len(output_files) != 0:
+        for item in output_files:
+            os.remove(os.path.join(CURRENT_DIR, 'data', 'output', item))
+    mets.write(os.path.join(CURRENT_DIR, 'data', 'output', 'mets.xml'),
+        encoding='UTF-8')
