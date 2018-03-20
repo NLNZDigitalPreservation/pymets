@@ -333,7 +333,7 @@ def ordered_file_list(rep_directory_path):
         files = str_file_names + int_file_names
         for item in files:
             output_file_list.append(os.path.join(root,item))
-    return output_file_list
+    return sorted(output_file_list)
 
 
 def recurse_over_filedict(root_element, input_dict, pres_type=None):
