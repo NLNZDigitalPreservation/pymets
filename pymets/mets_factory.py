@@ -307,7 +307,8 @@ def generate_flgrp_details_and_structmap(mets, rep_directory_path, rep_id,
 
 def ordered_file_list(rep_directory_path):
     """Checks to see if all files in a directory have integers for filenames,
-    and if they do, they will be sorted numerically for the structMap.
+    and if they do, they will be sorted numerically for the structMap. Otherwise,
+    they will be sorted alphabetically.
     """
     # NOTE: this function assumes that the files either have no extension,
     # or that they contain a single extension. If, for example, you have a
@@ -330,10 +331,10 @@ def ordered_file_list(rep_directory_path):
         if len(int_file_names) > 0:
             int_file_names = sorted(int_file_names, 
                 key=lambda x: int(x[:x.rfind(".")]))
-        files = str_file_names + int_file_names
+        files = sorted(str_file_names) + int_file_names
         for item in files:
             output_file_list.append(os.path.join(root,item))
-    return sorted(output_file_list)
+    return output_file_list
 
 
 def recurse_over_filedict(root_element, input_dict, pres_type=None):
