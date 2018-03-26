@@ -1,3 +1,4 @@
+# This Python file uses the following encoding: utf-8
 import os
 
 import sys
@@ -144,7 +145,7 @@ def test_mets_write_with_utf8_with_macron():
     mets = mm.Mets()
     # Fill with some stuff
     dmd_el = mm.DmdSec(ID='ie1')
-    dmd_el.text = 'māori'
+    dmd_el.text = u'māori'
     mets.append(dmd_el)
     output_files = os.listdir(os.path.join(CURRENT_DIR, 'data', 'output'))
     if len(output_files) != 0:
