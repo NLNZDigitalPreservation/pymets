@@ -30,8 +30,14 @@ def initialise_values(element, attribs_list):
                 element.set("{%s}%s" % (XLIN_NS, key), element.attrib[key])
                 del element.attrib[key]
         elif key not in attribs_list:
-            print("WARN: {} not allowed in element {}".format(
-                key, element.TAG))
+            if hasattr(element, "TAG"):
+                print("WARN: {} not allowed in element {}".format(
+                    key, element.TAG))
+            elif hasattr(element, "tag"):
+                print("WARN: {} not allowed in element {}".format(
+                    key, element.tag))
+            else:
+                print("WARN: problem with {}".format(key))
             if strict:
                 del element.attrib[key]
 
@@ -570,7 +576,7 @@ class TechMd(MdExt):
 
 class RightsMd(MdExt):
     def _init(self, **kwargs):
-        super(RightsMd, self)._init("rightsMD",**kwargs)
+        super(RightsMd, self)._init("rightsMD", **kwargs)
 
 
 class SourceMd(MdExt):

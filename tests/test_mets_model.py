@@ -153,3 +153,10 @@ def test_mets_write_with_utf8_with_macron():
             os.remove(os.path.join(CURRENT_DIR, 'data', 'output', item))
     mets.write(os.path.join(CURRENT_DIR, 'data', 'output', 'mets.xml'),
         encoding='UTF-8')
+
+def test_TechMD_object_returns_correct_warning():
+    """prints invalid 'tag' attribute, rather than trying to print 'TAG' attribute"""
+    tech_md = mm.TechMd(ID="IE1", TYPE="Not a thing")
+    print(tech_md.attrib)
+    assert("TYPE" not in tech_md.attrib)
+    assert("ID" in tech_md.attrib)
