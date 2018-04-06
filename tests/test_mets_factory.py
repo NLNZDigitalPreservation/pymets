@@ -101,6 +101,7 @@ def test_mixed_numeric_alphanum_files():
     print(test_list)
     assert(filelist == test_list)
 
+
 def test_alpahnum_files_with_nums_and_leading_zeroes():
     """files like "page 001.txt" should return like sorted(os.listdir())"""
     filelist = mf.ordered_file_list('manyfiles_leading_zeroes')
@@ -109,3 +110,14 @@ def test_alpahnum_files_with_nums_and_leading_zeroes():
         test_list.append('manyfiles_leading_zeroes/' + test_file)
     print(filelist)
     assert(filelist == sorted(test_list))
+
+
+def test_build_digiprovMD():
+    """buld_digiprovMD() function returns a digiprovMD object"""
+    xmldata = ET.fromstring(
+        "<node><key1>value1</key1><key2>value2</key2></node>")
+    mdwrap_obj = mf.build_mdWrap({"MDTYPE": "OTHER", "OTHERMDTYPE": "TEST"},
+                                 binData_list=None,
+                                 xmlData_list=[xmldata, ])
+    print(ET.tostring(mdwrap_obj))
+    assert(mdwrap_obj.tag == "{http://www.loc.gov/METS/}mdWrap")

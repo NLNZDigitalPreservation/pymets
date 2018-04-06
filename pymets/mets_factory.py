@@ -170,6 +170,7 @@ def build_mdWrap(mdWrap_attrs, binData_list=None, xmlData_list=None):
         for xmlData_list_element in xmlData_list:
             xd = mets_model.XmlData()
             xd.append(xmlData_list_element)
+            md_wrap.append(xd)
     return md_wrap
 
 
@@ -204,7 +205,7 @@ def build_sourceMD(sourceMD_attrs, mdRef_list, mdWrap_list):
         mdWrap_list)
 
 
-def build_sourceMD(digiprovMD_attrs, mdRef_list, mdWrap_list):
+def build_digiprovMD(digiprovMD_attrs, mdRef_list, mdWrap_list):
     return build_generic_sec(mets_model.DigiprovMd, digiprovMD_attrs, mdRef_list, 
         mdWrap_list)
 
