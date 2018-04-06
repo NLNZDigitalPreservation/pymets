@@ -196,7 +196,7 @@ def build_techMD(techMD_attrs, mdRef_list, mdWrap_list):
 
 
 def build_rightsMD(rightsMD_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets_model.rightsMd, rightsMD_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.RightsMd, rightsMD_attrs, mdRef_list, 
         mdWrap_list)
 
 
