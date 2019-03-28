@@ -17,14 +17,14 @@ def build_amdsec_filegrp_structmap(mets_doc,
 
     flgrp_dict = []
 
-    if (pres_master_dir != None and 
-            modified_master_dir != None and 
+    if (pres_master_dir != None and
+            modified_master_dir != None and
             access_derivative_dir != None):
         parse_rep_directory(
-                mets_doc, 
-                pres_master_dir, 
+                mets_doc,
+                pres_master_dir,
                 'PRESERVATION_MASTER',
-                ie_id + "-rep1", 
+                ie_id + "-rep1",
                 digital_original)
         flgrp_dict.append(generate_flgrp_details_and_structmap(
                 mets=mets_doc,
@@ -126,12 +126,12 @@ def build_amdsec_filegrp_structmap(mets_doc,
     if len(flgrp_dict) > 0:
         mets_doc.append(build_fileSec(flgrp_dict=flgrp_dict))
 
-    # reposition the structmap so it is at the final point of the 
-    structmap_list = mets_doc.xpath("/mets:mets/mets:structMap", 
+    # reposition the structmap so it is at the final point of the
+    structmap_list = mets_doc.xpath("/mets:mets/mets:structMap",
             namespaces={'mets': 'http://www.loc.gov/METS/'})
     for structmap in structmap_list:
         mets_doc.append(structmap)
-        
+
     return mets_doc
 
 
@@ -155,7 +155,7 @@ def build_generic_sec(sec, attrs, mdRef_list, mdWrap_list):
 # dmdSec
 
 def build_dmdSec(dmdSec_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets_model.DmdSec, dmdSec_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.DmdSec, dmdSec_attrs, mdRef_list,
         mdWrap_list)
 
 
@@ -191,27 +191,27 @@ def build_amdSec(amdSec_attrs, techMD_list=None, rightsMD_list=None,
 
 
 def build_techMD(techMD_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets_model.TechMd, techMD_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.TechMd, techMD_attrs, mdRef_list,
         mdWrap_list)
 
 
 def build_rightsMD(rightsMD_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets_model.RightsMd, rightsMD_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.RightsMd, rightsMD_attrs, mdRef_list,
         mdWrap_list)
 
 
 def build_sourceMD(sourceMD_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets_model.SourceMd, sourceMD_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.SourceMd, sourceMD_attrs, mdRef_list,
         mdWrap_list)
 
 
 def build_digiprovMD(digiprovMD_attrs, mdRef_list, mdWrap_list):
-    return build_generic_sec(mets_model.DigiprovMd, digiprovMD_attrs, mdRef_list, 
+    return build_generic_sec(mets_model.DigiprovMd, digiprovMD_attrs, mdRef_list,
         mdWrap_list)
 
 # Helpers for amdsecs for reps and files
 
-def parse_rep_directory(mets_record, 
+def parse_rep_directory(mets_record,
                         rep_directory_path,
                         pres_type,
                         idNo,
@@ -280,7 +280,7 @@ def generate_flgrp_details_and_structmap(mets, rep_directory_path, rep_id,
         file_details = {"{}-file{}".format( rep_id, str(fileNo) ) :
                             {
                             # 'MIMETYPE': mime_type,
-                            'href': filepath} }
+                            'href': filepath.replace('\\', '/')} }
         fd[rep_id][1].append(file_details)
 
         # time to build the fileDict for the StructMap!
@@ -289,18 +289,18 @@ def generate_flgrp_details_and_structmap(mets, rep_directory_path, rep_id,
         file_path_dict = os_path_split_asunder(item)
         # grab the filename from file_path_dict
         file_name = file_path_dict.pop()
-        # reverse the file_path_dict, so we can easily 
+        # reverse the file_path_dict, so we can easily
         # pop off the dirs in order
         file_path_dict = file_path_dict[::-1]
-        populate_file_dict(file_path_dict, 
-                           file_name, 
+        populate_file_dict(file_path_dict,
+                           file_name,
                            # "fid%s-%s" % (str(fileNo), idNo),
                            "{}-file{}".format(rep_id, str(fileNo)),
                            fileDict)
 
         # Now, back to the structMap!
     structMap_attrs = {'ID': rep_id + "-1", 'TYPE': repType}
-    mets.append(build_structMap(structMap_attrs=structMap_attrs, 
+    mets.append(build_structMap(structMap_attrs=structMap_attrs,
                                 presType=presType,
                                 fileDict=fileDict))
     return fd
@@ -330,7 +330,7 @@ def ordered_file_list(rep_directory_path):
             except ValueError:
                 str_file_names.append(item)
         if len(int_file_names) > 0:
-            int_file_names = sorted(int_file_names, 
+            int_file_names = sorted(int_file_names,
                 key=lambda x: int(x[:x.rfind(".")]))
         files = sorted(str_file_names) + int_file_names
         for item in files:
@@ -358,7 +358,7 @@ def recurse_over_filedict(root_element, input_dict, pres_type=None):
 def populate_file_dict(file_path_list, file_name, file_id, init_dict):
     if len(file_path_list) > 0:
         if file_path_list[-1] in init_dict.keys():
-            populate_file_dict(file_path_list[:-1], 
+            populate_file_dict(file_path_list[:-1],
                                file_name,
                                file_id,
                                init_dict[file_path_list[-1]])
@@ -414,7 +414,7 @@ def build_fileSec(flgrp_dict):
                 for fi in file_item:
                     file_id = fi
                     file_admid = "{}-amd".format(file_id)
-                    file_element = mets_model.File(ID=file_id, 
+                    file_element = mets_model.File(ID=file_id,
                                                    ADMID=file_admid)
                     flgrp.append(file_element)
                     flocat = mets_model.FLocat(href=file_item[fi]['href'],
