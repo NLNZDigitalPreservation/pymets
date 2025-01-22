@@ -24,36 +24,36 @@ def build_amdsec_filegrp_structmap(mets_doc,
                 mets_doc,
                 pres_master_dir,
                 'PRESERVATION_MASTER',
-                ie_id + "-rep1",
+                "rep1",
                 digital_original)
         flgrp_dict.append(generate_flgrp_details_and_structmap(
                 mets=mets_doc,
                 rep_directory_path=pres_master_dir,
-                rep_id=ie_id + "-rep1",
+                rep_id="rep1",
                 pres_type="Preservation Master",
                 input_dir=input_dir))
         parse_rep_directory(
                 mets_doc,
                 modified_master_dir,
                 'MODIFIED_MASTER',
-                ie_id + "-rep2",
+                "rep2",
                 digital_original)
         flgrp_dict.append(generate_flgrp_details_and_structmap(
                 mets=mets_doc,
                 rep_directory_path=modified_master_dir,
-                rep_id=ie_id + "-rep2",
+                rep_id="rep2",
                 pres_type="Modified Master",
                 input_dir=input_dir))
         parse_rep_directory(
                 mets_doc,
                 access_derivative_dir,
                 'DERIVATIVE_COPY',
-                ie_id + "-rep3",
+                "rep3",
                 digital_original)
         flgrp_dict.append(generate_flgrp_details_and_structmap(
                 mets=mets_doc,
                 rep_directory_path=access_derivative_dir,
-                rep_id=ie_id + "-rep3",
+                rep_id="rep3",
                 pres_type="Derivative Copy",
                 input_dir=input_dir))
 
@@ -62,24 +62,24 @@ def build_amdsec_filegrp_structmap(mets_doc,
                 mets_doc,
                 pres_master_dir,
                 'PRESERVATION_MASTER',
-                ie_id + "-rep1",
+                "rep1",
                 digital_original)
         flgrp_dict.append(generate_flgrp_details_and_structmap(
                 mets=mets_doc,
                 rep_directory_path=pres_master_dir,
-                rep_id=ie_id + "-rep1",
+                rep_id="rep1",
                 pres_type="Preservation Master",
                 input_dir=input_dir))
         parse_rep_directory(
                 mets_doc,
                 access_derivative_dir,
                 'DERIVATIVE_COPY',
-                ie_id + "-rep2",
+                "rep2",
                 digital_original)
         flgrp_dict.append(generate_flgrp_details_and_structmap(
                 mets=mets_doc,
                 rep_directory_path=access_derivative_dir,
-                rep_id=ie_id + "-rep2",
+                rep_id="rep2",
                 pres_type="Derivative Copy",
                 input_dir=input_dir))
 
@@ -88,24 +88,24 @@ def build_amdsec_filegrp_structmap(mets_doc,
                 mets_doc,
                 pres_master_dir,
                 'PRESERVATION_MASTER',
-                ie_id + "-rep1",
+                "rep1",
                 digital_original)
         flgrp_dict.append(generate_flgrp_details_and_structmap(
                 mets=mets_doc,
                 rep_directory_path=pres_master_dir,
-                rep_id=ie_id + "-rep1",
+                rep_id="rep1",
                 pres_type="Preservation Master",
                 input_dir=input_dir))
         parse_rep_directory(
                 mets_doc,
                 modified_master_dir,
                 'MODIFIED_MASTER',
-                ie_id + "-rep2",
+                "rep2",
                 digital_original)
         flgrp_dict.append(generate_flgrp_details_and_structmap(
                 mets=mets_doc,
                 rep_directory_path=modified_master_dir,
-                rep_id=ie_id + "-rep2",
+                rep_id="rep2",
                 pres_type="Modified Master",
                 input_dir=input_dir))
 
@@ -114,12 +114,12 @@ def build_amdsec_filegrp_structmap(mets_doc,
                 mets_doc,
                 pres_master_dir,
                 'PRESERVATION_MASTER',
-                ie_id + "-rep1",
+                "rep1",
                 digital_original)
         flgrp_dict.append(generate_flgrp_details_and_structmap(
                 mets=mets_doc,
                 rep_directory_path=pres_master_dir,
-                rep_id=ie_id + "-rep1",
+                rep_id="rep1",
                 pres_type="Preservation Master",
                 input_dir=input_dir))
 
@@ -405,17 +405,18 @@ def build_fileSec(flgrp_dict):
             id_val = item
             rep_no = id_val[3:]
             rep_admid = id_val + "-amd"
-            flgrp_attrs = {'USE': rep[item][0]['USE'],
+            flgrp_attrs = {
                            'ID': id_val,
                            'ADMID': rep_admid}
             flgrp = mets_model.FileGrp(**flgrp_attrs)
             file_sec.append(flgrp)
-            for file_item in rep[item][1]:
+            for grp_id, file_item in enumerate(rep[item][1]):
                 for fi in file_item:
                     file_id = fi
                     file_admid = "{}-amd".format(file_id)
                     file_element = mets_model.File(ID=file_id,
                                                    ADMID=file_admid)
+                                                #    GROUPID=str(grp_id+1))
                     flgrp.append(file_element)
                     flocat = mets_model.FLocat(href=file_item[fi]['href'],
                                                LOCTYPE='URL')
